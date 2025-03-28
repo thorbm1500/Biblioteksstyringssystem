@@ -10,7 +10,7 @@ class Member:
         self.borrowed_books = borrowed_books
 
     def display_info(self):
-        print("ID: " + self.member_id + " | Name: " + self.name + " | Borrowed Books: " + self.borrowed_books)
+        print("ID: " + str(self.member_id) + " | Name: " + self.name + " | Borrowed Books: " + self.borrowed_books)
 
     def borrow_book(self, book):
         self.borrowed_books.append(book)
