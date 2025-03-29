@@ -93,6 +93,13 @@ class Library:
         for book in self.books:
             book.display_info(self)
 
+    def display_book(self, book_id):
+        for book in self.books:
+            if book.book_id == book_id:
+                book.display_info(self)
+                return
+        print("Error. No book found with ID: " + str(book_id))
+
     # Prints all the members with their ID and Name
     def display_members(self):
         for member in self.members:
@@ -103,7 +110,7 @@ class Library:
         member = self.get_member_from_id(member_id)
 
         if member is None:
-            print("Error. No member found with ID: " + member_id)
+            print("Error. No member found with ID: " + str(member_id))
             return
 
         member.display_info()

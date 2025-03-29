@@ -1,6 +1,5 @@
 class Member:
 
-    id = 0
     name = ""
     borrowed_books = []
 
@@ -10,7 +9,7 @@ class Member:
         self.borrowed_books = borrowed_books
 
     def display_info(self):
-        print("ID: " + str(self.member_id) + " | Name: " + self.name + " | Borrowed Books: " + self.borrowed_books)
+        print("ID: " + str(self.member_id) + " | Name: " + self.name + " | Borrowed Books: " + str(self.borrowed_books))
 
     def borrow_book(self, book):
         self.borrowed_books.append(book)
