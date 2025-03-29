@@ -100,6 +100,13 @@ class Library:
                 return
         print("Error. No book found with ID: " + str(book_id))
 
+    def get_member_from_string(self, name):
+        for member in self.members:
+            if member.name.lower() == name.lower():
+                return member
+
+        return None
+
     # Prints all the members with their ID and Name
     def display_members(self):
         for member in self.members:
