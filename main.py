@@ -118,9 +118,9 @@ def initialize_library():
 
 def main():
     initialize_library()
+    util.title()
     while prompt():
         pass
 
 if __name__ == "__main__":
-    util.title()
     main()
