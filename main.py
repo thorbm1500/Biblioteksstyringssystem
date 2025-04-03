@@ -11,7 +11,7 @@ book_manager = BookManager(library)
 member_manager = MemberManager(library)
 
 def prompt():
-    user_input = input("")
+    user_input = input()
 
     match user_input.lower():
         case "exit"|"stop"|"shutdown"|"end"|"close":
@@ -24,7 +24,11 @@ def prompt():
 
         case "help 2":
             util.clear()
-            print("Prompts - Page 2\n  > create - Create new books or members.\n  > delete - Delete books or members")
+            print("Prompts - Page 2\n  > create - Create new books or members.\n  > delete - Delete books or members.\n  > update - Update books or members.\n\nUse 'help 3' to go to the next page...")
+
+        case "help 3":
+            util.clear()
+            print("Prompts - Page 3\n  > rent - Rent a book.\n  > return - Return a book.")
 
         case "books":
             library.display_books()
@@ -37,6 +41,18 @@ def prompt():
 
         case "delete"|"del":
             delete()
+
+        case "update":
+            #todo:Add update method for books and members
+            pass
+
+        case "rent"|"rent book"|"issue"|"issue book":
+            #todo:Add renting books
+            pass
+
+        case "return"|"return book":
+            #todo:Add returning books
+            pass
 
         case _:
             print("Error. '" + user_input + "' is not a known command.")
@@ -85,26 +101,79 @@ def delete():
 
     match user_input.lower():
         case "book"|"books":
-            util.clear()
+            delete_book()
 
         case "member"|"members":
             delete_member()
 
+def delete_book():
+    util.clear()
+
+    user_input = input("Deletion Panel\n\nChoose a deletion method\n[ ID , Name ]\n\n")
+    book = None
+
+    match user_input.lower():
+        case "id":
+            _id = input("Deletion Panel\n\nSelect a book\n\nID: ")
+            book = library.get_book_from_id(_id)
+
+            if book is None:
+                user_input = input("Error. No book found with that ID. Do you want to try again? [Y/N]")
+                if user_input.lower() == "y" or user_input.lower() == "yes":
+                    delete_book()
+                else:
+                    util.clear()
+                    util.title()
+                return
+        case "name":
+            name = input("Deletion Panel\n\nSelect a member\n\nName: ")
+            book = library.get_book_from_string(name)
+
+            if book is None:
+                user_input = input("Error. No book found with that name. Do you want to try again? [Y/N]")
+                if user_input.lower() == "y" or user_input.lower() == "yes":
+                    delete_member()
+                else:
+                    util.clear()
+                    util.title()
+                return
+
+    book_manager.delete_book(book.book_id)
+    print("Book " + book.name + " with ID: " + str(book.book_id) + " has been deleted.")
+
 def delete_member():
     util.clear()
 
-    name = input("Deletion Panel\n\nSelect a member\n\nName: ")
-    member = library.get_member_from_string(name)
-    if member is None:
-        user_input = input("Error. No member found with that name. Do you want to try again? [Y/N]")
-        if user_input.lower() == "y" or user_input.lower() == "yes":
-            delete_member()
-        else:
-            util.clear()
-            util.title()
-            return
+    user_input = input("Deletion Panel\n\nChoose a deletion method\n[ ID , Name ]\n\n")
+    member = None
 
-    library.remove_member(member.member_id)
+    match user_input.lower():
+        case "id":
+            _id = input("Deletion Panel\n\nSelect a member\n\nID: ")
+            member = library.get_member_from_id(_id)
+
+            if member is None:
+                user_input = input("Error. No member found with that ID. Do you want to try again? [Y/N]")
+                if user_input.lower() == "y" or user_input.lower() == "yes":
+                    delete_member()
+                else:
+                    util.clear()
+                    util.title()
+                return
+        case "name":
+            name = input("Deletion Panel\n\nSelect a member\n\nName: ")
+            member = library.get_member_from_string(name)
+
+            if member is None:
+                user_input = input("Error. No member found with that name. Do you want to try again? [Y/N]")
+                if user_input.lower() == "y" or user_input.lower() == "yes":
+                    delete_member()
+                else:
+                    util.clear()
+                    util.title()
+                return
+
+    member_manager.delete_member(member.member_id)
     print("Member " + member.name + " with ID: " + str(member.member_id) + " has been deleted.")
 
 def initialize_library():

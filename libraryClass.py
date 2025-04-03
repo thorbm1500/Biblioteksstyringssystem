@@ -25,6 +25,7 @@ class Library:
 
         self.books.pop(book)
 
+
     # Update a book in the library
     def update_book(self, book):
         book_id = book.book_id
@@ -68,7 +69,7 @@ class Library:
             return
 
         if copies == 0:
-            print("Error. No available copies found.")
+            print("Error. The book is out of stock.")
             return
 
         member.borrow_book(book)
@@ -99,6 +100,13 @@ class Library:
                 book.display_info(self)
                 return
         print("Error. No book found with ID: " + str(book_id))
+
+    def get_book_from_string(self, name):
+        for book in self.books:
+            if book.title.lower() == name.lower():
+                return book
+
+        return None
 
     def get_member_from_string(self, name):
         for member in self.members:
