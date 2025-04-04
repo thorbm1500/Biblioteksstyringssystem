@@ -14,7 +14,7 @@ def prompt():
     user_input = input()
 
     match user_input.lower():
-        case "exit"|"stop"|"shutdown"|"end"|"close":
+        case "exit"|"stop"|"shutdown"|"end"|"close"|"quit":
             print("Goodbye.")
             return False
 
@@ -43,8 +43,7 @@ def prompt():
             delete()
 
         case "update":
-            #todo:Add update method for books and members
-            pass
+            update()
 
         case "rent"|"rent book"|"issue"|"issue book":
             #todo:Add renting books
@@ -58,6 +57,106 @@ def prompt():
             print("Error. '" + user_input + "' is not a known command.")
 
     return True
+
+def update():
+    util.clear()
+
+    user_input = input("Update Panel\n\nChoose an object\n[ Book , Member ]\n\n")
+
+    match user_input.lower():
+        case "book"|"books":
+            update_book()
+
+        case "member"|"members":
+            pass
+
+def update_book():
+    util.clear()
+
+    user_input = input("Update Panel\n\nChoose an update method\n[ ID , Name ]\n\n")
+    book = None
+
+    util.clear()
+
+    match user_input.lower():
+        case "id":
+            _id = input("Update Panel\n\nSelect a book\n\nID: ")
+            book = library.get_book_from_id(_id)
+
+            if book is None:
+                user_input = input("Error. No book found with that ID. Do you want to try again? [Y/N]\n")
+                if user_input.lower() == "y" or user_input.lower() == "yes":
+                    update_book()
+                else:
+                    util.clear()
+                    util.title()
+                return
+
+        case "name":
+            name = input("Update Panel\n\nSelect a book\n\nName: ")
+            book = library.get_book_from_string(name)
+
+            if book is None:
+                user_input = input("Error. No book found with that name. Do you want to try again? [Y/N]\n")
+                if user_input.lower() == "y" or user_input.lower() == "yes":
+                    delete_member()
+                else:
+                    util.clear()
+                    util.title()
+                return
+
+    util.clear()
+
+    # Current book details
+    book_id = book.book_id
+    title = book.title
+    author = book.author
+    copies = library.get_copies(book.book_id)
+
+    user_input = input("Update Panel\n\nChoose a detail to update.\n[ Title , Author , Copies ]\n")
+
+    match user_input.lower():
+        case "title":
+            util.clear()
+
+            new_title = input("Update Panel\n\nOld Title: " + title + "\nNew Title: ")
+
+            util.clear()
+
+            confirm_changes = input("Update Panel\n\nOld book: Title: "
+                                    + title + ", Author: "
+                                    + author + ", Copies: "
+                                    + str(copies) + "\nNew book: Title: "
+                                    + new_title + ", Author: " + author + ", Copies: " + str(copies) + "\nConfirm changes [Y/N]\n")
+
+            match confirm_changes.lower():
+                case "exit"|"quit"|"cancel":
+                    util.clear()
+                    util.title()
+
+                case "y"|"yes":
+                    util.clear()
+                    book_manager.update_book(book_id,new_title,author,copies)
+                    input("Update Panel\n\nNew book: Title: " + title + ", Author: " + author + ", Copies: " + str(copies) + "\nChanges saved. Press enter to continue...")
+                    util.clear()
+                    util.title()
+
+                case "n"|"no":
+                    update_book()
+
+        case "author"|"authors":
+            #todo:Add logic
+            pass
+
+        case "copies":
+            # todo:Add logic
+            pass
+
+        case "id":
+            # todo:Add logic
+            pass
+
+    return
 
 def create():
     util.clear()
@@ -126,13 +225,13 @@ def delete_book():
                     util.title()
                 return
         case "name":
-            name = input("Deletion Panel\n\nSelect a member\n\nName: ")
+            name = input("Deletion Panel\n\nSelect a book\n\nName: ")
             book = library.get_book_from_string(name)
 
             if book is None:
                 user_input = input("Error. No book found with that name. Do you want to try again? [Y/N]")
                 if user_input.lower() == "y" or user_input.lower() == "yes":
-                    delete_member()
+                    delete_book()
                 else:
                     util.clear()
                     util.title()

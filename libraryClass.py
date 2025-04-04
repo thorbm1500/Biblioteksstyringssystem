@@ -133,7 +133,7 @@ class Library:
     # Get an instance of a book with the book's ID
     def get_book_from_id(self, book_id):
         for book in self.books:
-            if book.book_id is book_id:
+            if book.book_id == int(book_id):
                 return book
 
         # Returns None if no book was found
@@ -147,3 +147,13 @@ class Library:
 
         # Returns None if no member was found
         return None
+
+    # Get the number of copies available of a book in the library
+    def get_copies(self, _id):
+        for book in self.books:
+            if book.book_id == _id:
+                return self.books.get(book)
+
+    def update_book(self, book, copies):
+        self.remove_book(book.book_id)
+        self.add_book(book, copies)
