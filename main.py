@@ -98,8 +98,8 @@ def update_book():
 
             if book is None:
                 user_input = input("Error. No book found with that name. Do you want to try again? [Y/N]\n")
-                if user_input.lower() == "y" or user_input.lower() == "yes":
-                    delete_member()
+                if user_input.lower().__contains__("y" or "yes"):
+                    update_book()
                 else:
                     util.clear()
                     util.title()
@@ -107,54 +107,90 @@ def update_book():
 
     util.clear()
 
-    # Current book details
-    book_id = book.book_id
-    title = book.title
-    author = book.author
-    copies = library.get_copies(book.book_id)
+    # Current and new book details
+    old_book_id = new_book_id = book.book_id
+    old_title = new_title = book.title
+    old_author = new_author = book.author
+    old_copies = new_copies = library.get_copies(old_book_id)
 
-    user_input = input("Update Panel\n\nChoose a detail to update.\n[ Title , Author , Copies ]\n")
+    user_input = input("Update Panel\n\nChoose a detail to update.\n[ ID , Title , Author , Copies ]\n")
 
     match user_input.lower():
         case "title":
             util.clear()
 
-            new_title = input("Update Panel\n\nOld Title: " + title + "\nNew Title: ")
-
-            util.clear()
-
-            confirm_changes = input("Update Panel\n\nOld book: Title: "
-                                    + title + ", Author: "
-                                    + author + ", Copies: "
-                                    + str(copies) + "\nNew book: Title: "
-                                    + new_title + ", Author: " + author + ", Copies: " + str(copies) + "\nConfirm changes [Y/N]\n")
-
-            match confirm_changes.lower():
-                case "exit"|"quit"|"cancel":
-                    util.clear()
-                    util.title()
-
-                case "y"|"yes":
-                    util.clear()
-                    book_manager.update_book(book_id,new_title,author,copies)
-                    input("Update Panel\n\nNew book: Title: " + title + ", Author: " + author + ", Copies: " + str(copies) + "\nChanges saved. Press enter to continue...")
-                    util.clear()
-                    util.title()
-
-                case "n"|"no":
-                    update_book()
+            new_title = input("Update Panel\n\nOld Title: " + old_title + "\nNew Title: ")
 
         case "author"|"authors":
-            #todo:Add logic
-            pass
+            util.clear()
+
+            new_author = input("Update Panel\n\nOld Author: " + old_author + "\nNew Author: ")
 
         case "copies":
-            # todo:Add logic
-            pass
+            util.clear()
+
+            new_copies = input("Update Panel\n\nOld Copies: " + old_copies + "\nNew Title: ")
+
+            try:
+                new_copies = int(new_copies)
+            except:
+                user_input = input("Error. '" + str(new_copies) + "' is not an integer. Do you want to try again? [Y/N]\n")
+                if user_input.lower().__contains__("y" or "yes"):
+                    update()
+                else:
+                    util.clear()
+                    util.title()
+                return
 
         case "id":
-            # todo:Add logic
-            pass
+            util.clear()
+
+            new_book_id = input("Update Panel\n\nOld ID: " + str(old_book_id) + "\nNew ID: ")
+
+            try:
+                new_book_id = int(new_book_id)
+            except:
+                user_input = input("Error. '" + str(new_book_id) + "' is not an integer. Do you want to try again? [Y/N]\n")
+                if user_input.lower().__contains__("y" or "yes"):
+                    update()
+                else:
+                    util.clear()
+                    util.title()
+                return
+
+    util.clear()
+
+    confirm_changes = input("Update Panel\n\nOld book: Title: "
+                                    + old_title + ", Author: "
+                                    + old_author + ", Copies: "
+                                    + str(old_copies) + "\nNew book: Title: "
+                                    + new_title + ", Author: " + new_author + ", Copies: "
+                                    + str(new_copies) + "\nConfirm changes [Y/N]\n")
+
+    while not util.legal_exec(confirm_changes):
+        util.clear()
+        confirm_changes = input("Update Panel\n\nOld book: Title: "
+                                + old_title + ", Author: "
+                                + old_author + ", Copies: "
+                                + str(old_copies) + "\nNew book: Title: "
+                                + new_title + ", Author: " + new_author + ", Copies: "
+                                + str(new_copies) + "\nConfirm changes [Y/N]\n")
+
+    match confirm_changes.lower():
+        case "exit"|"quit"|"cancel":
+            util.clear()
+            util.title()
+
+        case "y"|"yes":
+            util.clear()
+            book_manager.update_book(old_book_id,new_book_id,new_title,new_author,new_copies)
+            book = library.get_book_from_id(new_book_id)
+            input("Update Panel\n\nNew book: Title: " + book.title + ", Author: " + book.author + ", Copies: " + str(library.get_copies(new_book_id)) + "\nChanges saved. Press enter to continue...")
+            util.clear()
+            util.title()
+
+        case "n"|"no":
+            update()
 
     return
 

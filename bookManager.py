@@ -42,11 +42,13 @@ class BookManager:
         if self.library.remove_book(int(_id)) is not None:
             self.update_book_id(_id)
 
-    def update_book(self, book_id, title, author, copies):
-        new_book = Book(book_id, title, author)
-        self.library.update_book(new_book, copies)
+    def update_book(self, old_book_id, new_book_id, title, author, copies):
+        new_book = Book(new_book_id, title, author)
+        self.library.update_book(old_book_id, new_book, copies)
         for member in self.library.members:
+            if member.borrowed_books is None:
+                break
             for book in member.borrowed_books:
-                if book.book_id == book_id:
+                if book.book_id == old_book_id:
                     member.borrowed_books.remove(book)
             member.borrow_book(new_book)

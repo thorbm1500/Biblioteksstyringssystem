@@ -20,7 +20,7 @@ class Library:
         book = self.get_book_from_id(book_id)
 
         if book is None:
-            print("Error. No book exists with ID: " + book_id)
+            print("Error. No book exists with ID: " + str(book_id))
             return
 
         self.books.pop(book)
@@ -45,7 +45,7 @@ class Library:
         member = self.get_member_from_id(member_id)
 
         if member is None:
-            print("Error. No member found with ID: " + member_id)
+            print("Error. No member found with ID: " + str(member_id))
             return
 
         self.members.remove(member)
@@ -65,7 +65,7 @@ class Library:
         copies = self.books.get(book)
 
         if book is None:
-            print("Error. No book exists with ID: " + book_id)
+            print("Error. No book exists with ID: " + str(book_id))
             return
 
         if copies == 0:
@@ -80,7 +80,7 @@ class Library:
         copies = self.books.get(book)
 
         if book is None:
-            print("Error. No book exists with ID: " + book_id)
+            print("Error. No book exists with ID: " + str(book_id))
             return
 
         if member.borrowed_books.contains(book) is not True:
@@ -132,8 +132,13 @@ class Library:
 
     # Get an instance of a book with the book's ID
     def get_book_from_id(self, book_id):
+        try:
+            _id = int(book_id)
+        except:
+            return None
+
         for book in self.books:
-            if book.book_id == int(book_id):
+            if book.book_id == _id:
                 return book
 
         # Returns None if no book was found
@@ -154,6 +159,6 @@ class Library:
             if book.book_id == _id:
                 return self.books.get(book)
 
-    def update_book(self, book, copies):
-        self.remove_book(book.book_id)
+    def update_book(self, old_book_id, book, copies):
+        self.remove_book(old_book_id)
         self.add_book(book, copies)

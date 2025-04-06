@@ -9,3 +9,10 @@ class Util:
 
     def title(self):
         print("Zealand Library\nUse 'help' to get started.\n")
+
+    def legal_exec(self, _input):
+        match _input:
+            case "exit"|"quit"|"cancel"|"y"|"yes"|"n"|"no":
+                return True
+            case _:
+                return False
