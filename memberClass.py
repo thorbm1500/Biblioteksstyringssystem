@@ -9,10 +9,21 @@ class Member:
         self.borrowed_books = borrowed_books
 
     def display_info(self):
-        print("ID: " + str(self.member_id) + " | Name: " + self.name + " | Borrowed Books: " + str(self.borrowed_books))
+        if self.borrowed_books is None:
+            print("ID: " + str(self.member_id) + " | Name: " + self.name + " | Borrowed Books: None")
+        else:
+            book_list = ""
+
+            for book in self.borrowed_books:
+                book_list = book_list + "\n        [" + str(book.book_id) + "] " + book.title + " by " + book.author
+
+            print("ID: " + str(self.member_id) + " | Name: " + self.name + " | Borrowed Books:" + book_list)
 
     def borrow_book(self, book):
-        self.borrowed_books.append(book)
+        if self.borrowed_books is None:
+            self.borrowed_books = [ book ]
+        else:
+            self.borrowed_books.append(book)
 
     def return_book(self, book):
         self.borrowed_books.remove(book)

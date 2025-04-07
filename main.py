@@ -46,8 +46,7 @@ def prompt():
             update()
 
         case "rent"|"rent book"|"issue"|"issue book":
-            #todo:Add renting books
-            pass
+            rent()
 
         case "return"|"return book":
             #todo:Add returning books
@@ -58,22 +57,159 @@ def prompt():
 
     return True
 
+def rent():
+    util.clear()
+
+    user_input = input("Rent a book\n\nSelect a member\n[ ID , Name ]\n\n")
+    if util.is_cancelled(user_input): return
+
+    member = None
+    book = None
+
+    util.clear()
+
+    match user_input.lower():
+        case "id":
+
+            _id = input("Rent a book\n\nSelect a member\n\nID: ")
+
+            try:
+                _id = int(_id)
+            except:
+                user_input = input("Error. '" + str(_id) + "' is not an integer. Do you want to try again? [Y/N]\n\n")
+                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
+                    rent()
+                else:
+                    util.clear()
+                    util.title()
+                return
+
+            member = library.get_member_from_id(int(_id))
+
+        case "name":
+            name = input("Rent a book\n\nSelect a member\n\nName: ")
+
+            member = library.get_member_from_string(name)
+
+        case _:
+            user_input = input("Rent a book\n\nUnknown selection. Do you want to try again? [Y/N]\n\n")
+            if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
+                rent()
+            else:
+                util.clear()
+                util.title()
+            return
+
+    if member is None:
+        user_input = input("Error. No member found with that ID. Do you want to try again? [Y/N]\n\n")
+        if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
+            delete_member()
+        else:
+            util.clear()
+            util.title()
+        return
+
+    util.clear()
+
+    user_input = input("Rent a book\n\nMember selected: [" + str(member.member_id) + "] " + member.name + "\nPress enter to continue...")
+    if util.is_cancelled(user_input): return
+
+    util.clear()
+
+    user_input = input("Rent a book\n\nSelect a book\n[ ID , Name ]\n\n")
+    if util.is_cancelled(user_input): return
+
+    match user_input.lower():
+        case "id":
+
+            _id = input("Rent a book\n\nSelect a book\n\nID: ")
+
+            try:
+                _id = int(_id)
+            except:
+                user_input = input("Error. '" + str(_id) + "' is not an integer. Do you want to try again? [Y/N]\n\n")
+                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
+                    rent()
+                else:
+                    util.clear()
+                    util.title()
+                return
+
+            book = library.get_book_from_id(_id)
+
+            if book is None:
+                user_input = input("Error. No book found with that ID. Do you want to try again? [Y/N]\n\n")
+                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
+                    update_book()
+                else:
+                    util.clear()
+                    util.title()
+                return
+
+        case "name":
+            name = input("Rent a book\n\nSelect a book\n\nName: ")
+
+            book = library.get_book_from_string(name)
+
+            if book is None:
+                user_input = input("Error. No book found with that name. Do you want to try again? [Y/N]\n\n")
+                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
+                    update_book()
+                else:
+                    util.clear()
+                    util.title()
+                return
+
+    # Checks if any copies are available
+    if library.get_copies(book.book_id) < 1:
+        input("Rent a book\n\nThe chosen book '" + book.title + "' has no available copies. Press enter to continue...")
+        util.clear()
+        util.title()
+        return
+
+    # Checks if the member already has the book borrowed
+    if member.borrowed_books is not None:
+        if member.borrowed_books.contains(book):
+            input("Rent a book\n\nThis book has already been borrowed by this member. Press enter to continue...")
+            util.clear()
+            util.title()
+            return
+
+    member.borrow_book(book)
+
+    util.clear()
+
+    input("Rent a book\n\n[" + str(member.member_id) + "] " + member.name + " has borrowed [" + str(book.book_id) + "] " + book.title + "\n\nPress enter to continue...")
+
+    util.clear()
+    util.title()
+
 def update():
     util.clear()
 
     user_input = input("Update Panel\n\nChoose an object\n[ Book , Member ]\n\n")
+    if util.is_cancelled(user_input): return
 
     match user_input.lower():
         case "book"|"books":
             update_book()
 
         case "member"|"members":
+            #todo:Add updating for members
             pass
+
+        case _:
+            input("Object: '" + str(user_input) + "' is unknown. Press enter to continue...")
+            util.clear()
+            util.title()
+            return
 
 def update_book():
     util.clear()
 
     user_input = input("Update Panel\n\nChoose an update method\n[ ID , Name ]\n\n")
+    if util.is_cancelled(user_input): return
+
     book = None
 
     util.clear()
@@ -81,11 +217,12 @@ def update_book():
     match user_input.lower():
         case "id":
             _id = input("Update Panel\n\nSelect a book\n\nID: ")
+            if util.is_cancelled(_id): return
             book = library.get_book_from_id(_id)
 
             if book is None:
-                user_input = input("Error. No book found with that ID. Do you want to try again? [Y/N]\n")
-                if user_input.lower() == "y" or user_input.lower() == "yes":
+                user_input = input("Error. No book found with that ID. Do you want to try again? [Y/N]\n\n")
+                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
                     update_book()
                 else:
                     util.clear()
@@ -94,11 +231,12 @@ def update_book():
 
         case "name":
             name = input("Update Panel\n\nSelect a book\n\nName: ")
+            if util.is_cancelled(name): return
             book = library.get_book_from_string(name)
 
             if book is None:
-                user_input = input("Error. No book found with that name. Do you want to try again? [Y/N]\n")
-                if user_input.lower().__contains__("y" or "yes"):
+                user_input = input("Error. No book found with that name. Do you want to try again? [Y/N]\n\n")
+                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
                     update_book()
                 else:
                     util.clear()
@@ -114,27 +252,31 @@ def update_book():
     old_copies = new_copies = library.get_copies(old_book_id)
 
     user_input = input("Update Panel\n\nChoose a detail to update.\n[ ID , Title , Author , Copies ]\n")
+    if util.is_cancelled(user_input): return
 
     match user_input.lower():
         case "title":
             util.clear()
 
             new_title = input("Update Panel\n\nOld Title: " + old_title + "\nNew Title: ")
+            if util.is_cancelled(new_title): return
 
         case "author"|"authors":
             util.clear()
 
             new_author = input("Update Panel\n\nOld Author: " + old_author + "\nNew Author: ")
+            if util.is_cancelled(new_author): return
 
         case "copies":
             util.clear()
 
             new_copies = input("Update Panel\n\nOld Copies: " + old_copies + "\nNew Title: ")
+            if util.is_cancelled(new_copies): return
 
             try:
                 new_copies = int(new_copies)
             except:
-                user_input = input("Error. '" + str(new_copies) + "' is not an integer. Do you want to try again? [Y/N]\n")
+                user_input = input("Error. '" + str(new_copies) + "' is not an integer. Do you want to try again? [Y/N]\n\n")
                 if user_input.lower().__contains__("y" or "yes"):
                     update()
                 else:
@@ -146,11 +288,12 @@ def update_book():
             util.clear()
 
             new_book_id = input("Update Panel\n\nOld ID: " + str(old_book_id) + "\nNew ID: ")
+            if util.is_cancelled(new_book_id): return
 
             try:
                 new_book_id = int(new_book_id)
             except:
-                user_input = input("Error. '" + str(new_book_id) + "' is not an integer. Do you want to try again? [Y/N]\n")
+                user_input = input("Error. '" + str(new_book_id) + "' is not an integer. Do you want to try again? [Y/N]\n\n")
                 if user_input.lower().__contains__("y" or "yes"):
                     update()
                 else:
@@ -165,7 +308,7 @@ def update_book():
                                     + old_author + ", Copies: "
                                     + str(old_copies) + "\nNew book: Title: "
                                     + new_title + ", Author: " + new_author + ", Copies: "
-                                    + str(new_copies) + "\nConfirm changes [Y/N]\n")
+                                    + str(new_copies) + "\nConfirm changes [Y/N]\n\n")
 
     while not util.legal_exec(confirm_changes):
         util.clear()
@@ -174,13 +317,11 @@ def update_book():
                                 + old_author + ", Copies: "
                                 + str(old_copies) + "\nNew book: Title: "
                                 + new_title + ", Author: " + new_author + ", Copies: "
-                                + str(new_copies) + "\nConfirm changes [Y/N]\n")
+                                + str(new_copies) + "\nConfirm changes [Y/N]\n\n")
+
+    if util.is_cancelled(user_input): return
 
     match confirm_changes.lower():
-        case "exit"|"quit"|"cancel":
-            util.clear()
-            util.title()
-
         case "y"|"yes":
             util.clear()
             book_manager.update_book(old_book_id,new_book_id,new_title,new_author,new_copies)
@@ -198,6 +339,7 @@ def create():
     util.clear()
 
     user_input = input("Creation Panel\n\nChoose an object\n[ Book , Member ]\n\n")
+    if util.is_cancelled(user_input): return
 
     match user_input.lower():
         case "book"|"books":
@@ -233,6 +375,7 @@ def delete():
     util.clear()
 
     user_input = input("Deletion Panel\n\nChoose an object\n[ Book , Member ]\n\n")
+    if util.is_cancelled(user_input): return
 
     match user_input.lower():
         case "book"|"books":
@@ -245,6 +388,8 @@ def delete_book():
     util.clear()
 
     user_input = input("Deletion Panel\n\nChoose a deletion method\n[ ID , Name ]\n\n")
+    if util.is_cancelled(user_input): return
+
     book = None
 
     match user_input.lower():
@@ -253,8 +398,8 @@ def delete_book():
             book = library.get_book_from_id(_id)
 
             if book is None:
-                user_input = input("Error. No book found with that ID. Do you want to try again? [Y/N]")
-                if user_input.lower() == "y" or user_input.lower() == "yes":
+                user_input = input("Error. No book found with that ID. Do you want to try again? [Y/N]\n\n")
+                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
                     delete_book()
                 else:
                     util.clear()
@@ -265,8 +410,8 @@ def delete_book():
             book = library.get_book_from_string(name)
 
             if book is None:
-                user_input = input("Error. No book found with that name. Do you want to try again? [Y/N]")
-                if user_input.lower() == "y" or user_input.lower() == "yes":
+                user_input = input("Error. No book found with that name. Do you want to try again? [Y/N]\n\n")
+                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
                     delete_book()
                 else:
                     util.clear()
@@ -274,12 +419,14 @@ def delete_book():
                 return
 
     book_manager.delete_book(book.book_id)
-    print("Book " + book.name + " with ID: " + str(book.book_id) + " has been deleted.")
+    print("Book " + book.title + " with ID: " + str(book.book_id) + " has been deleted.")
 
 def delete_member():
     util.clear()
 
     user_input = input("Deletion Panel\n\nChoose a deletion method\n[ ID , Name ]\n\n")
+    if util.is_cancelled(user_input): return
+
     member = None
 
     match user_input.lower():
@@ -288,8 +435,8 @@ def delete_member():
             member = library.get_member_from_id(_id)
 
             if member is None:
-                user_input = input("Error. No member found with that ID. Do you want to try again? [Y/N]")
-                if user_input.lower() == "y" or user_input.lower() == "yes":
+                user_input = input("Error. No member found with that ID. Do you want to try again? [Y/N]\n\n")
+                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
                     delete_member()
                 else:
                     util.clear()
@@ -300,8 +447,8 @@ def delete_member():
             member = library.get_member_from_string(name)
 
             if member is None:
-                user_input = input("Error. No member found with that name. Do you want to try again? [Y/N]")
-                if user_input.lower() == "y" or user_input.lower() == "yes":
+                user_input = input("Error. No member found with that name. Do you want to try again? [Y/N]\n\n")
+                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
                     delete_member()
                 else:
                     util.clear()
@@ -315,6 +462,7 @@ def initialize_library():
     book_manager.new_book("Harry Potter","J.K. Rowling",32)
     book_manager.new_book("Game of Thrones","George R.R. Martin",512)
     book_manager.new_book("Twilight","Stephanie Mayers",363)
+    book_manager.new_book("Test Book", "Thor B.", 0)
 
     member_manager.new_member("Thor M.",None)
     member_manager.new_member("John D.", None)
