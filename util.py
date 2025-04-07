@@ -66,4 +66,6 @@ class Util:
             if self.retry("Error. '" + str(integer) + "' is not an integer. Do you want to try again? [Y/N]\n\n"):
                 integer = self.parse_integer(self.user_input(string))
 
+        if integer is None: self.clean()
+
         return integer
