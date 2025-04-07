@@ -27,3 +27,33 @@ class Util:
                 self.title()
                 return True
         return False
+
+    # Used to parse integers from strings
+    def parse_integer(self, integer):
+        try:
+            integer = int(integer)
+        except:
+            return None
+        return integer
+
+    def retry(self, string):
+        user_input = input(string)
+
+        match user_input.lower():
+            case "y"|"yes": return True
+
+        return False
+
+    def clean(self, string=""):
+        if string == "":
+            self.clear()
+            self.title()
+        else:
+            input(string)
+            self.clear()
+            self.title()
+
+    def user_input(self, string=""):
+        ui = input(string)
+        self.clear()
+        return ui
