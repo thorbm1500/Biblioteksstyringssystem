@@ -168,12 +168,11 @@ def rent():
         return
 
     # Checks if the member already has the book borrowed
-    if member.borrowed_books is not None:
-        if member.is_borrowed(book):
-            input("Rent a book\n\nThis book has already been borrowed by this member. Press enter to continue...")
-            util.clear()
-            util.title()
-            return
+    if member.borrowed_books is not None and member.is_borrowed(book):
+        input("Rent a book\n\nThis book has already been borrowed by this member. Press enter to continue...")
+        util.clear()
+        util.title()
+        return
 
     member.borrow_book(book)
 
@@ -390,7 +389,10 @@ def update_book():
     old_author = new_author = book.author
     old_copies = new_copies = library.get_copies(old_book_id)
 
-    #todo:Add "book selected"
+    user_input = input("Update Panel\n\nBook selected: [" + str(old_book_id) + "] " + str(old_title) + " by " + old_author + "\nPress enter to continue...")
+    if util.is_cancelled(user_input): return
+
+    util.clear()
 
     user_input = input("Update Panel\n\nChoose a detail to update.\n[ ID , Title , Author , Copies ]\n")
     if util.is_cancelled(user_input): return
