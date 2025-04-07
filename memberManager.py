@@ -28,7 +28,7 @@ class MemberManager:
         return False
 
     # Used for updating the member ID.
-    def update_member_id(self, _id):
+    def update_member_id(self, _id=None):
         if _id is None:
             self.member_id = 0
         else:
@@ -41,3 +41,20 @@ class MemberManager:
     def delete_member(self, _id):
         if self.library.remove_member(int(_id)) is not None:
             self.update_member_id(_id)
+
+    def update_member(self, old_member_id, new_member_id, new_member_name):
+        for member in self.library.members:
+            if member.member_id == old_member_id:
+                member.member_id = new_member_id
+                member.name = new_member_name
+
+    def check_id_availability(self, member_id):
+        try:
+            member_id = int(member_id)
+        except:
+            return False
+
+        for member in self.library.members:
+            if member.member_id == member_id:
+                return False
+        return True

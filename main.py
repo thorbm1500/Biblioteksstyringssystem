@@ -195,8 +195,7 @@ def update():
             update_book()
 
         case "member"|"members":
-            #todo:Add updating for members
-            pass
+            update_member()
 
         case _:
             input("Object: '" + str(user_input) + "' is unknown. Press enter to continue...")
@@ -204,10 +203,147 @@ def update():
             util.title()
             return
 
-def update_book():
+def update_member():
     util.clear()
 
     user_input = input("Update Panel\n\nChoose an update method\n[ ID , Name ]\n\n")
+    if util.is_cancelled(user_input): return
+
+    member = None
+
+    util.clear()
+
+    match user_input.lower():
+        case "id":
+            _id = input("Update Panel\n\nSelect a member\n\nID: ")
+            if util.is_cancelled(_id): return
+            member = library.get_member_from_id(_id)
+
+            if member is None:
+                user_input = input("Error. No member found with that ID. Do you want to try again? [Y/N]\n\n")
+                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
+                    update_member()
+                else:
+                    util.clear()
+                    util.title()
+                return
+
+        case "name":
+            name = input("Update Panel\n\nSelect a member\n\nName: ")
+            if util.is_cancelled(name): return
+            member = library.get_member_from_string(name)
+
+            if member is None:
+                user_input = input("Error. No member found with that name. Do you want to try again? [Y/N]\n\n")
+                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
+                    update_member()
+                else:
+                    util.clear()
+                    util.title()
+                return
+
+    util.clear()
+
+    old_member_id = new_member_id = member.member_id
+    old_member_name = new_member_name = member.name
+
+    user_input = input("Update Panel\n\nMember selected: [" + str(old_member_id) + "] " + str(old_member_name) + "\nPress enter to continue...")
+    if util.is_cancelled(user_input): return
+
+    util.clear()
+
+    user_input = input("Update Panel\n\nChoose a detail to update.\n[ ID , Name ]\n\n")
+    if util.is_cancelled(user_input): return
+
+    util.clear()
+
+    match user_input.lower():
+        case "id":
+            util.clear()
+
+            new_member_id = input("Update Panel\n\nOld ID: " + str(old_member_id) + "\nNew ID: ")
+            if util.is_cancelled(new_member_id): return
+
+            try:
+                new_member_id = int(new_member_id)
+            except:
+                user_input = input("Error. '" + str(new_member_id) + "' is not an integer. Do you want to try again? [Y/N]\n\n")
+                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
+                    update()
+                else:
+                    util.clear()
+                    util.title()
+                return
+
+            while not member_manager.check_id_availability(new_member_id):
+                user_input = input("Update Panel\n\nID is already in use. Do you want to try again? [Y/N]\n\n")
+                if util.is_cancelled(new_member_id): return
+
+                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
+
+                    util.clear()
+
+                    new_member_id = input("Update Panel\n\nOld ID: " + str(old_member_id) + "\nNew ID: ")
+                    if util.is_cancelled(new_member_id): return
+
+                    try:
+                        new_member_id = int(new_member_id)
+                    except:
+                        user_input = input(
+                            "Error. '" + str(new_member_id) + "' is not an integer. Do you want to try again? [Y/N]\n\n")
+                        if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
+                            update()
+                        else:
+                            util.clear()
+                            util.title()
+                        return
+                else:
+                    util.clear()
+                    util.title()
+                    return
+
+        case "name":
+            util.clear()
+
+            new_member_name = input("Update Panel\n\nOld name: " + old_member_name + "\nNew name: ")
+            if util.is_cancelled(new_member_name): return
+
+    util.clear()
+
+    confirm_changes = input("Update Panel\n\nOld details: ID: "
+                                    + str(old_member_id) + ", Name: "
+                                    + old_member_name + "\nNew Details: ID: "
+                                    + str(new_member_id) + ", Name: "
+                                    + new_member_name + "\nConfirm changes [Y/N]\n\n")
+
+    if util.is_cancelled(user_input): return
+
+    while not util.legal_exec(confirm_changes):
+        util.clear()
+        confirm_changes = input("Update Panel\n\nOld details: ID: "
+                                    + str(old_member_id) + ", Name: "
+                                    + old_member_name + "\nNew Details: ID: "
+                                    + str(new_member_id) + ", Name: "
+                                    + new_member_name + "\nConfirm changes [Y/N]\n\n")
+
+    if util.is_cancelled(user_input): return
+
+    match confirm_changes.lower():
+        case "y"|"yes":
+            util.clear()
+            member_manager.update_member(old_member_id,new_member_id,new_member_name)
+            input("Update Panel\n\nNew details: ID: " + str(new_member_id) + ", Name: " + new_member_name + "\nChanges saved. Press enter to continue...")
+            util.clear()
+            util.title()
+
+        case "n"|"no":
+            update()
+
+
+def update_book():
+    util.clear()
+
+    user_input = input("Update Panel\n\nChoose an update method\n[ ID , Title ]\n\n")
     if util.is_cancelled(user_input): return
 
     book = None
@@ -218,6 +354,9 @@ def update_book():
         case "id":
             _id = input("Update Panel\n\nSelect a book\n\nID: ")
             if util.is_cancelled(_id): return
+
+
+
             book = library.get_book_from_id(_id)
 
             if book is None:
@@ -229,13 +368,13 @@ def update_book():
                     util.title()
                 return
 
-        case "name":
-            name = input("Update Panel\n\nSelect a book\n\nName: ")
+        case "title"|"name":
+            name = input("Update Panel\n\nSelect a book\n\nTitle: ")
             if util.is_cancelled(name): return
             book = library.get_book_from_string(name)
 
             if book is None:
-                user_input = input("Error. No book found with that name. Do you want to try again? [Y/N]\n\n")
+                user_input = input("Error. No book found with that title. Do you want to try again? [Y/N]\n\n")
                 if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
                     update_book()
                 else:
@@ -250,6 +389,8 @@ def update_book():
     old_title = new_title = book.title
     old_author = new_author = book.author
     old_copies = new_copies = library.get_copies(old_book_id)
+
+    #todo:Add "book selected"
 
     user_input = input("Update Panel\n\nChoose a detail to update.\n[ ID , Title , Author , Copies ]\n")
     if util.is_cancelled(user_input): return
@@ -277,7 +418,7 @@ def update_book():
                 new_copies = int(new_copies)
             except:
                 user_input = input("Error. '" + str(new_copies) + "' is not an integer. Do you want to try again? [Y/N]\n\n")
-                if user_input.lower().__contains__("y" or "yes"):
+                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
                     update()
                 else:
                     util.clear()
@@ -294,7 +435,7 @@ def update_book():
                 new_book_id = int(new_book_id)
             except:
                 user_input = input("Error. '" + str(new_book_id) + "' is not an integer. Do you want to try again? [Y/N]\n\n")
-                if user_input.lower().__contains__("y" or "yes"):
+                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
                     update()
                 else:
                     util.clear()
@@ -308,7 +449,9 @@ def update_book():
                                     + old_author + ", Copies: "
                                     + str(old_copies) + "\nNew book: Title: "
                                     + new_title + ", Author: " + new_author + ", Copies: "
-                                    + str(new_copies) + "\nConfirm changes [Y/N]\n\n")
+                                    + str(new_copies) + "\nConfirm changes [Y/N]\n\n"),
+
+    if util.is_cancelled(user_input): return
 
     while not util.legal_exec(confirm_changes):
         util.clear()
@@ -332,8 +475,6 @@ def update_book():
 
         case "n"|"no":
             update()
-
-    return
 
 def create():
     util.clear()

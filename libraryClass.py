@@ -133,12 +133,12 @@ class Library:
     # Get an instance of a book with the book's ID
     def get_book_from_id(self, book_id):
         try:
-            _id = int(book_id)
+            book_id = int(book_id)
         except:
             return None
 
         for book in self.books:
-            if book.book_id == _id:
+            if book.book_id == book_id:
                 return book
 
         # Returns None if no book was found
@@ -146,6 +146,11 @@ class Library:
 
     # Get an instance of a member with the member's ID
     def get_member_from_id(self, member_id):
+        try:
+            member_id = int(member_id)
+        except:
+            return None
+
         for member in self.members:
             if member.member_id is member_id:
                 return member
