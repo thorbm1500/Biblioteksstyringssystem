@@ -19,16 +19,13 @@ def prompt():
             return False
 
         case "help"|"help 1":
-            util.clear()
-            print("Prompts - Page 1\n  > help - Shows this list.\n  > exit - Shuts down the program.\n  > books - Prints a list of all books.\n  > members - Prints a list of all members.\n\nUse 'help 2' to go to the next page...")
+            util.clear_print("Prompts - Page 1\n  > help - Shows this list.\n  > exit - Shuts down the program.\n  > books - Prints a list of all books.\n  > members - Prints a list of all members.\n\nUse 'help 2' to go to the next page...")
 
         case "help 2":
-            util.clear()
-            print("Prompts - Page 2\n  > create - Create new books or members.\n  > delete - Delete books or members.\n  > update - Update books or members.\n\nUse 'help 3' to go to the next page...")
+            util.clear_print("Prompts - Page 2\n  > create - Create new books or members.\n  > delete - Delete books or members.\n  > update - Update books or members.\n\nUse 'help 3' to go to the next page...")
 
         case "help 3":
-            util.clear()
-            print("Prompts - Page 3\n  > rent - Rent a book.\n  > return - Return a book.")
+            util.clear_print("Prompts - Page 3\n  > rent - Rent a book.\n  > return - Return a book.")
 
         case "books":
             library.display_books()
@@ -52,7 +49,7 @@ def prompt():
             return_books()
 
         case _:
-            print("Error. '" + user_input + "' is not a known command.")
+            util.clean("Error. '" + user_input + "' is not a known command. Press enter to continue...")
 
     return True
 
@@ -66,17 +63,11 @@ def return_books():
 
     match user_input.lower():
         case "id":
+            member_id = util.parse_integer(util.user_input("Return a book\n\nSelect a member\n\nID: "))
 
-            member_id = util.user_input("Return a book\n\nSelect a member\n\nID: ")
-
-            try:
-                member_id = int(member_id)
-            except:
-                user_input = input("Error. '" + str(member_id) + "' is not an integer. Do you want to try again? [Y/N]\n\n")
-                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
-                    rent()
-                else:
-                    util.clean()
+            if member_id is None:
+                if util.retry("Error. '" + str(member_id) + "' is not an integer. Do you want to try again? [Y/N]\n\n"):
+                    return_books()
                 return
 
             member = library.get_member_from_id(member_id)
@@ -87,11 +78,8 @@ def return_books():
             member = library.get_member_from_string(name)
 
         case _:
-            user_input = input("Return a book\n\nUnknown selection. Do you want to try again? [Y/N]\n\n")
-            if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
+            if util.retry("Return a book\n\nUnknown selection. Do you want to try again? [Y/N]\n\n"):
                 return_books()
-            else:
-                util.clean()
             return
 
     if member is None:
@@ -115,19 +103,14 @@ def return_books():
     for book in member.borrowed_books:
         print("  [" + str(book.book_id) + "] " + book.title + " by " + book.author)
 
-    user_input = util.user_input("\nID: ")
+    book_id = util.parse_integer(util.user_input("\nID: "))
 
-    try:
-        user_input = int(user_input)
-    except:
-        user_input = input("Error. '" + str(user_input) + "' is not an integer. Do you want to try again? [Y/N]\n\n")
-        if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
+    if book_id is None:
+        if util.retry("Error. '" + str(book_id) + "' is not an integer. Do you want to try again? [Y/N]\n\n"):
             return_books()
-        else:
-            util.clean()
         return
 
-    book = library.get_book_from_id(user_input)
+    book = library.get_book_from_id(book_id)
 
     if book is None:
         user_input = input("Return a book\n\nError. No book found with that ID. Do you want to try again? [Y/N]\n\n")
@@ -158,20 +141,12 @@ def rent():
 
     match user_input.lower():
         case "id":
-
-            _id = util.user_input("Rent a book\n\nSelect a member\n\nID: ")
-
-            try:
-                _id = int(_id)
-            except:
-                user_input = input("Error. '" + str(_id) + "' is not an integer. Do you want to try again? [Y/N]\n\n")
-                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
-                    rent()
-                else:
-                    util.clean()
+            member_id = util.user_input_get_integer("Rent a book\n\nSelect a member\n\nID: ")
+            if member_id is None:
+                util.clean()
                 return
 
-            member = library.get_member_from_id(int(_id))
+            member = library.get_member_from_id(member_id)
 
         case "name":
             name = util.user_input("Rent a book\n\nSelect a member\n\nName: ")
@@ -179,11 +154,8 @@ def rent():
             member = library.get_member_from_string(name)
 
         case _:
-            user_input = input("Rent a book\n\nUnknown selection. Do you want to try again? [Y/N]\n\n")
-            if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
+            if util.retry("Rent a book\n\nUnknown selection. Do you want to try again? [Y/N]\n\n"):
                 rent()
-            else:
-                util.clean()
             return
 
     if member is None:
@@ -202,20 +174,12 @@ def rent():
 
     match user_input.lower():
         case "id":
-
-            _id = util.user_input("Rent a book\n\nSelect a book\n\nID: ")
-
-            try:
-                _id = int(_id)
-            except:
-                user_input = input("Error. '" + str(_id) + "' is not an integer. Do you want to try again? [Y/N]\n\n")
-                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
-                    rent()
-                else:
-                    util.clean()
+            book_id = util.user_input_get_integer("Rent a book\n\nSelect a book\n\nID: ")
+            if book_id is None:
+                util.clean()
                 return
 
-            book = library.get_book_from_id(_id)
+            book = library.get_book_from_id(book_id)
 
             if book is None:
                 user_input = input("Error. No book found with that ID. Do you want to try again? [Y/N]\n\n")
@@ -270,9 +234,9 @@ def update():
             update_member()
 
         case _:
-            util.clear()
-            input("Object: '" + str(user_input) + "' is unknown. Press enter to continue...")
-            util.clean()
+            if util.retry("Update Panel\n\nUnknown selection. Do you want to try again? [Y/N]\n\n"):
+                update()
+            return
 
 def update_member():
     util.clear()
@@ -284,9 +248,12 @@ def update_member():
 
     match user_input.lower():
         case "id":
-            _id = util.user_input("Update Panel\n\nSelect a member\n\nID: ")
-            if util.is_cancelled(_id): return
-            member = library.get_member_from_id(_id)
+            member_id = util.user_input_get_integer("Update Panel\n\nSelect a member\n\nID: ")
+            if member_id is None:
+                util.clean()
+                return
+
+            member = library.get_member_from_id(member_id)
 
             if member is None:
                 user_input = input("Error. No member found with that ID. Do you want to try again? [Y/N]\n\n")
@@ -321,17 +288,9 @@ def update_member():
 
     match user_input.lower():
         case "id":
-            new_member_id = util.user_input("Update Panel\n\nOld ID: " + str(old_member_id) + "\nNew ID: ")
-            if util.is_cancelled(new_member_id): return
-
-            try:
-                new_member_id = int(new_member_id)
-            except:
-                user_input = input("Error. '" + str(new_member_id) + "' is not an integer. Do you want to try again? [Y/N]\n\n")
-                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
-                    update()
-                else:
-                    util.clean()
+            new_member_id = util.user_input_get_integer("Update Panel\n\nOld ID: " + str(old_member_id) + "\nNew ID: ")
+            if new_member_id is None:
+                util.clean()
                 return
 
             while not member_manager.check_id_availability(new_member_id):
@@ -339,14 +298,10 @@ def update_member():
                 if util.is_cancelled(new_member_id): return
 
                 if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
-                    new_member_id = util.user_input("Update Panel\n\nOld ID: " + str(old_member_id) + "\nNew ID: ")
-                    if util.is_cancelled(new_member_id): return
-
-                    try:
-                        new_member_id = int(new_member_id)
-                    except:
-                        new_member_id = -999
-                        continue
+                    new_member_id = util.user_input_get_integer("Update Panel\n\nOld ID: " + str(old_member_id) + "\nNew ID: ")
+                    if new_member_id is None:
+                        util.clean()
+                        return
                 else:
                     util.clean()
                     return
@@ -393,10 +348,12 @@ def update_book():
 
     match user_input.lower():
         case "id":
-            _id = util.user_input("Update Panel\n\nSelect a book\n\nID: ")
-            if util.is_cancelled(_id): return
+            book_id = util.user_input_get_integer("Update Panel\n\nSelect a book\n\nID: ")
+            if book_id is None:
+                util.clean()
+                return
 
-            book = library.get_book_from_id(_id)
+            book = library.get_book_from_id(book_id)
 
             if book is None:
                 user_input = input("Error. No book found with that ID. Do you want to try again? [Y/N]\n\n")
@@ -442,31 +399,15 @@ def update_book():
             if util.is_cancelled(new_author): return
 
         case "copies":
-            new_copies = util.user_input("Update Panel\n\nOld Copies: " + old_copies + "\nNew Title: ")
-            if util.is_cancelled(new_copies): return
-
-            try:
-                new_copies = int(new_copies)
-            except:
-                user_input = input("Error. '" + str(new_copies) + "' is not an integer. Do you want to try again? [Y/N]\n\n")
-                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
-                    update()
-                else:
-                    util.clean()
+            new_copies = util.user_input_get_integer("Update Panel\n\nOld Copies: " + old_copies + "\nNew Title: ")
+            if new_copies is None:
+                util.clean()
                 return
 
         case "id":
-            new_book_id = util.user_input("Update Panel\n\nOld ID: " + str(old_book_id) + "\nNew ID: ")
-            if util.is_cancelled(new_book_id): return
-
-            try:
-                new_book_id = int(new_book_id)
-            except:
-                user_input = input("Error. '" + str(new_book_id) + "' is not an integer. Do you want to try again? [Y/N]\n\n")
-                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
-                    update()
-                else:
-                    util.clean()
+            new_book_id = util.user_input_get_integer("Update Panel\n\nOld ID: " + str(old_book_id) + "\nNew ID: ")
+            if new_book_id is None:
+                util.clean()
                 return
 
     confirm_changes = util.user_input("Update Panel\n\nOld book: Title: "
@@ -522,6 +463,11 @@ def create():
             library.display_member(new_member_id)
             util.clean("Press enter to continue...")
 
+        case _:
+            if util.retry("Creation Panel\n\nUnknown selection. Do you want to try again? [Y/N]\n\n"):
+                create()
+            return
+
 def delete():
     util.clear()
 
@@ -535,6 +481,11 @@ def delete():
         case "member"|"members":
             delete_member()
 
+        case _:
+            if util.retry("Deletion Panel\n\nUnknown selection. Do you want to try again? [Y/N]\n\n"):
+                delete()
+            return
+
 def delete_book():
     util.clear()
 
@@ -545,9 +496,12 @@ def delete_book():
 
     match user_input.lower():
         case "id":
-            _id = util.user_input("Deletion Panel\n\nSelect a book\n\nID: ")
-            #todo:Add integer parse
-            book = library.get_book_from_id(_id)
+            book_id = util.user_input_get_integer("Deletion Panel\n\nSelect a book\n\nID: ")
+            if book_id is None:
+                util.clean()
+                return
+
+            book = library.get_book_from_id(book_id)
 
             if book is None:
                 user_input = input("Error. No book found with that ID. Do you want to try again? [Y/N]\n\n")
@@ -581,14 +535,10 @@ def delete_member():
 
     match user_input.lower():
         case "id":
-            member_id = util.parse_integer(util.user_input("Deletion Panel\n\nSelect a member\n\nID: "))
-
+            member_id = util.user_input_get_integer("Deletion Panel\n\nSelect a member\n\nID: ")
             if member_id is None:
-                if util.retry("Error. '" + str(member_id) + "' is not an integer. Do you want to try again? [Y/N]\n\n"):
-                    delete_member()
-                else:
-                    util.clean()
-                    return
+                util.clean()
+                return
 
             member = library.get_member_from_id(member_id)
 

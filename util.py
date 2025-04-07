@@ -23,8 +23,7 @@ class Util:
         _input = str(_input)
         match _input.lower():
             case "exit"|"quit"|"cancel"|"stop"|"end":
-                self.clear()
-                self.title()
+                self.clean()
                 return True
         return False
 
@@ -37,11 +36,9 @@ class Util:
         return integer
 
     def retry(self, string):
-        user_input = input(string)
-
-        match user_input.lower():
+        match input(string).lower():
             case "y"|"yes": return True
-
+        self.clean()
         return False
 
     def clean(self, string=""):
@@ -57,3 +54,16 @@ class Util:
         ui = input(string)
         self.clear()
         return ui
+
+    def clear_print(self, string="This was left empty by mistake."):
+        self.clear()
+        print(string)
+
+    def user_input_get_integer(self, string):
+        integer = self.parse_integer(self.user_input(string))
+
+        while integer is None:
+            if self.retry("Error. '" + str(integer) + "' is not an integer. Do you want to try again? [Y/N]\n\n"):
+                integer = self.parse_integer(self.user_input(string))
+
+        return integer
