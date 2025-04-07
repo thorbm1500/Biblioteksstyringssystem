@@ -169,7 +169,7 @@ def rent():
 
     # Checks if the member already has the book borrowed
     if member.borrowed_books is not None:
-        if member.borrowed_books.contains(book):
+        if member.is_borrowed(book):
             input("Rent a book\n\nThis book has already been borrowed by this member. Press enter to continue...")
             util.clear()
             util.title()
@@ -462,7 +462,6 @@ def initialize_library():
     book_manager.new_book("Harry Potter","J.K. Rowling",32)
     book_manager.new_book("Game of Thrones","George R.R. Martin",512)
     book_manager.new_book("Twilight","Stephanie Mayers",363)
-    book_manager.new_book("Test Book", "Thor B.", 0)
 
     member_manager.new_member("Thor M.",None)
     member_manager.new_member("John D.", None)
