@@ -7,7 +7,7 @@ class BookManager:
     def __init__(self, library):
         self.library = library
 
-    def new_book(self, title, author, copies):
+    def new_book(self, title, author, copies=0):
         while self._generate_id():
             pass
         book = Book(self.book_id, title,author)

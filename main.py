@@ -462,10 +462,17 @@ def initialize_library():
     book_manager.new_book("Harry Potter","J.K. Rowling",32)
     book_manager.new_book("Game of Thrones","George R.R. Martin",512)
     book_manager.new_book("Twilight","Stephanie Mayers",363)
+    book_manager.new_book("The Great Gatsby", "F. Scott Fitzgerald", 786)
+    book_manager.new_book("One Hundred Years of Solitude", "Gabriel García Márquez", 13)
+    book_manager.new_book("Don Quixote", "Miguel de Cervantes", 6023)
+    book_manager.new_book("The Lord of the Rings", "J. R. R. Tolkien", 2345)
 
-    member_manager.new_member("Thor M.",None)
-    member_manager.new_member("John D.", None)
-    member_manager.new_member("Jane D.", None)
+    member_manager.new_member("Thor Møller")
+    member_manager.new_member("Emily Brontë")
+    member_manager.new_member("Leo Tolstoy")
+    member_manager.new_member("Fyodor Dostoevsky")
+    member_manager.new_member("William Faulkner")
+    member_manager.new_member("Albert Camus")
 
 def main():
     initialize_library()

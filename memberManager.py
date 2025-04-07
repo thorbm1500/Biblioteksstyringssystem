@@ -7,9 +7,13 @@ class MemberManager:
     def __init__(self, library):
         self.library = library
 
-    def new_member(self, name, borrowed_books):
+    def new_member(self, name, borrowed_books=None):
+        if borrowed_books is None:
+            borrowed_books = []
+
         while self._generate_id():
             pass
+
         member = Member(self.member_id, name, borrowed_books)
         self.library.add_member(member)
         return self.member_id

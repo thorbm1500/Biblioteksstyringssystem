@@ -9,7 +9,7 @@ class Member:
         self.borrowed_books = borrowed_books
 
     def display_info(self):
-        if self.borrowed_books is None:
+        if self.borrowed_books is None or len(self.borrowed_books)==0:
             print("ID: " + str(self.member_id) + " | Name: " + self.name + " | Borrowed Books: None")
         else:
             book_list = ""
