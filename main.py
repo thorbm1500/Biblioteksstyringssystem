@@ -65,7 +65,7 @@ def return_books():
             member = library.get_member_from_id(member_id)
 
             if member is None:
-                if util.retry("Error. No member found with that ID. Do you want to try again? [Y/N]\n\n"):
+                if util.retry("Return a book\n\nNo member found with that ID. Do you want to try again? [Y/N]\n\n"):
                     return_books()
                 return
 
@@ -76,7 +76,7 @@ def return_books():
             member = library.get_member_from_string(name)
 
             if member is None:
-                if util.retry("Error. No member found with that name. Do you want to try again? [Y/N]\n\n"):
+                if util.retry("Return a book\n\nNo member found with that name. Do you want to try again? [Y/N]\n\n"):
                     return_books()
                 return
 
@@ -103,7 +103,7 @@ def return_books():
     book = library.get_book_from_id(book_id)
 
     if book is None:
-        if util.retry("Return a book\n\nError. No book found with that ID. Do you want to try again? [Y/N]\n\n"):
+        if util.retry("Return a book\n\nNo book found with that ID. Do you want to try again? [Y/N]\n\n"):
             return_books()
         return
 
@@ -128,7 +128,7 @@ def rent():
             member = library.get_member_from_id(member_id)
 
             if member is None:
-                if util.retry("Error. No member found with that ID. Do you want to try again? [Y/N]\n\n"):
+                if util.retry("Rent a book\n\nNo member found with that ID. Do you want to try again? [Y/N]\n\n"):
                     rent()
                 return
 
@@ -138,7 +138,7 @@ def rent():
             member = library.get_member_from_string(name)
 
             if member is None:
-                if util.retry("Error. No member found with that name. Do you want to try again? [Y/N]\n\n"):
+                if util.retry("Rent a book\n\nNo member found with that name. Do you want to try again? [Y/N]\n\n"):
                     rent()
                 return
 
@@ -160,7 +160,7 @@ def rent():
             book = library.get_book_from_id(book_id)
 
             if book is None:
-                if util.retry("Error. No book found with that ID. Do you want to try again? [Y/N]\n\n"):
+                if util.retry("Rent a book\n\nNo book found with that ID. Do you want to try again? [Y/N]\n\n"):
                     rent()
                 return
 
@@ -171,7 +171,7 @@ def rent():
             book = library.get_book_from_string(title)
 
             if book is None:
-                if util.retry("Error. No book found with that name. Do you want to try again? [Y/N]\n\n"):
+                if util.retry("Rent a book\n\nNo book found with that name. Do you want to try again? [Y/N]\n\n"):
                     rent()
                 return
 
@@ -217,7 +217,7 @@ def update_member():
             member = library.get_member_from_id(member_id)
 
             if member is None:
-                if util.retry("Error. No member found with that ID. Do you want to try again? [Y/N]\n\n"):
+                if util.retry("Update Panel\n\nNo member found with that ID. Do you want to try again? [Y/N]\n\n"):
                     update_member()
                 return
 
@@ -227,7 +227,7 @@ def update_member():
             member = library.get_member_from_string(name)
 
             if member is None:
-                if util.retry("Error. No member found with that name. Do you want to try again? [Y/N]\n\n"):
+                if util.retry("Update Panel\n\nNo member found with that name. Do you want to try again? [Y/N]\n\n"):
                     update_member()
                 return
 
@@ -247,14 +247,10 @@ def update_member():
             if new_member_id is None: return
 
             while not member_manager.check_id_availability(new_member_id):
-                user_input = util.user_input("Update Panel\n\nID is already in use. Do you want to try again? [Y/N]\n\n")
-                if util.is_cancelled(new_member_id): return
-
-                if user_input.lower().__contains__("y") or user_input.lower().__contains__("yes"):
+                if util.retry("Update Panel\n\nID is already in use. Do you want to try again? [Y/N]\n\n"):
                     new_member_id = util.user_input_get_integer("Update Panel\n\nOld ID: " + str(old_member_id) + "\nNew ID: ")
                     if new_member_id is None: return
                 else:
-                    util.clean()
                     return
 
         case "name":
@@ -305,7 +301,7 @@ def update_book():
             book = library.get_book_from_id(book_id)
 
             if book is None:
-                if util.retry("Error. No book found with that ID. Do you want to try again? [Y/N]\n\n"):
+                if util.retry("Update Panel\n\nNo book found with that ID. Do you want to try again? [Y/N]\n\n"):
                     update_book()
                 return
 
@@ -316,7 +312,7 @@ def update_book():
             book = library.get_book_from_string(name)
 
             if book is None:
-                if util.retry("Error. No book found with that title. Do you want to try again? [Y/N]\n\n"):
+                if util.retry("Update Panel\n\nNo book found with that title. Do you want to try again? [Y/N]\n\n"):
                     update_book()
                 return
 
@@ -434,7 +430,7 @@ def delete_book():
             book = library.get_book_from_id(book_id)
 
             if book is None:
-                if util.retry("Error. No book found with that ID. Do you want to try again? [Y/N]\n\n"):
+                if util.retry("Deletion Panel\n\nNo book found with that ID. Do you want to try again? [Y/N]\n\n"):
                     delete_book()
                 return
 
@@ -445,7 +441,7 @@ def delete_book():
             book = library.get_book_from_string(name)
 
             if book is None:
-                if util.retry("Error. No book found with that name. Do you want to try again? [Y/N]\n\n"):
+                if util.retry("Deletion Panel\n\nNo book found with that name. Do you want to try again? [Y/N]\n\n"):
                     delete_book()
                 return
 
@@ -466,7 +462,7 @@ def delete_member():
             member = library.get_member_from_id(member_id)
 
             if member is None:
-                if util.retry("Error. No member found with that ID. Do you want to try again? [Y/N]\n\n"):
+                if util.retry("Deletion Panel\n\nNo member found with that ID. Do you want to try again? [Y/N]\n\n"):
                     delete_member()
                 return
 
@@ -477,7 +473,7 @@ def delete_member():
             member = library.get_member_from_string(name)
 
             if member is None:
-                if util.retry("Error. No member found with that name. Do you want to try again? [Y/N]\n\n"):
+                if util.retry("Deletion Panel\n\nNo member found with that name. Do you want to try again? [Y/N]\n\n"):
                     delete_member()
                 return
 
