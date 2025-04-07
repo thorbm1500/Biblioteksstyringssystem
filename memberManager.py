@@ -54,6 +54,8 @@ class MemberManager:
         except:
             return False
 
+        if member_id == -999: return False
+
         for member in self.library.members:
             if member.member_id == member_id:
                 return False
