@@ -1,33 +1,50 @@
 class Library:
+    def __init__(self, books=None, members=None):
+        """Library class"""
+        # Dictionary storing all the library's books and how many copies are stored
+        if books is None: self.books = {}
+        else: self.books = books
 
-    # Dictionary storing all the library's books and how many copies are stored.
-    books = {}
+        # List containing all the library's members
+        if members is None: self.members = []
+        else: self.members = members
 
-    # A list containing all the library's members
-    members = []
-
-    # Main method run when a new instance is created.
-    def __init__(self, books, members):
-        self.books = books
-        self.members = members
-
-    # Add a book to the library.
     def add_book(self, book, copies):
+        """Add a book to the library. Returns the ID of the book added to the library"""
+        try:
+            copies = int(copies)
+        except:
+            copies = 0
         self.books[book] = copies
+        return book.book_id
 
-    # Remove a book from the library
     def remove_book(self, book_id):
+        """Removes the book with the given ID from the library"""
+        try:
+            book_id = int(book_id)
+        except:
+            print(f"Error. {book_id} is not a valid book ID.")
+            return False
+
         book = self.get_book_from_id(book_id)
 
         if book is None:
             print("Error. No book exists with ID: " + str(book_id))
-            return
+            return False
+
+        # Removes the book from all members that currently has it borrowed
+        for member in self.members:
+            if member.borrowed_books is None: continue
+            for index in member.borrowed_books:
+                if index.book_id == book.book_id:
+                    member.borrowed_books.remove(book)
 
         self.books.pop(book)
+        return True
 
 
-    # Update a book in the library
     def update_book(self, book):
+        """Updates the given book in the library"""
         book_id = book.book_id
         old_book = self.get_book_from_id(book_id)
 
@@ -39,9 +56,11 @@ class Library:
             self.books.pop(old_book)
 
     def add_member(self, member):
+        """Adds the given member to the list of members"""
         self.members.append(member)
 
     def remove_member(self, member_id):
+        """Removes the member with the given ID from the list of members"""
         member = self.get_member_from_id(member_id)
 
         if member is None:
@@ -51,6 +70,7 @@ class Library:
         self.members.remove(member)
 
     def update_member(self, member):
+        """Updates the given member with new details"""
         member_id = member.member_id
         old_entry = self.get_member_from_id(member_id)
 
@@ -61,6 +81,7 @@ class Library:
             self.members.remove(old_entry)
 
     def issue_book(self, book_id, member):
+        """Lends a copy of the book with the given ID to the given member"""
         book = self.get_book_from_id(book_id)
         copies = self.books.get(book)
 
@@ -76,6 +97,7 @@ class Library:
         self.books.put(book,copies-1)
 
     def return_book(self, book_id, member):
+        """Returns the book with the given ID from the given member"""
         book = self.get_book_from_id(book_id)
         copies = self.books.get(book)
 
@@ -91,10 +113,12 @@ class Library:
         self.books.put(book, copies + 1)
 
     def display_books(self):
+        """Prints details on all books in the library"""
         for book in self.books:
             book.display_info(self)
 
     def display_book(self, book_id):
+        """Prints details about the book with the given ID"""
         for book in self.books:
             if book.book_id == book_id:
                 book.display_info(self)
@@ -102,6 +126,7 @@ class Library:
         print("Error. No book found with ID: " + str(book_id))
 
     def get_book_from_string(self, name):
+        """Get the book with the given name"""
         for book in self.books:
             if book.title.lower() == name.lower():
                 return book
@@ -109,19 +134,20 @@ class Library:
         return None
 
     def get_member_from_string(self, name):
+        """Get the member with the given name"""
         for member in self.members:
             if member.name.lower() == name.lower():
                 return member
 
         return None
 
-    # Prints all the members with their ID and Name
     def display_members(self):
+        """Prints details on all members in the library"""
         for member in self.members:
             member.display_info()
 
-    # Prints all info on a specific member
     def display_member(self, member_id):
+        """Prints details about the member with the given ID"""
         member = self.get_member_from_id(member_id)
 
         if member is None:
@@ -130,8 +156,8 @@ class Library:
 
         member.display_info()
 
-    # Get an instance of a book with the book's ID
     def get_book_from_id(self, book_id):
+        """Returns the book with the given ID"""
         try:
             book_id = int(book_id)
         except:
@@ -144,8 +170,8 @@ class Library:
         # Returns None if no book was found
         return None
 
-    # Get an instance of a member with the member's ID
     def get_member_from_id(self, member_id):
+        """Returns the member with the given ID"""
         try:
             member_id = int(member_id)
         except:
@@ -158,12 +184,21 @@ class Library:
         # Returns None if no member was found
         return None
 
-    # Get the number of copies available of a book in the library
     def get_copies(self, _id):
+        """Returns the number of copies available of the book with the given ID in the library"""
         for book in self.books:
             if book.book_id == _id:
                 return self.books.get(book)
 
     def update_book(self, old_book_id, book, copies):
+        """Removes the book with the old ID given, and inserts the new book in the library"""
         self.remove_book(old_book_id)
         self.add_book(book, copies)
+
+    def is_borrowed(self, book):
+        """Returns True or False whether the given book is currently being lent to any members"""
+        for member in self.members:
+            if member.borrowed_books is None: return False
+            for index in member.borrowed_books:
+                if book.book_id == index.book_id: return True
+            return False

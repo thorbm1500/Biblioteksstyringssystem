@@ -5,12 +5,13 @@ from util import Util
 
 util = Util()
 
-library = Library({},[])
+library = Library()
 
 book_manager = BookManager(library)
 member_manager = MemberManager(library)
 
 def prompt():
+    """Prompts the user with all available features. Returns True or False, whether the user should be prompted again"""
     user_input = util.user_input().lower()
 
     match user_input:
@@ -28,7 +29,11 @@ def prompt():
             util.clear_print("Prompts - Page 3\n  > rent - Rent a book.\n  > return - Return a book.")
 
         case "books":
+            print("Zealand Library - Book Index. 'books -v' to show all details.")
             library.display_books()
+
+        case "books -v"|"books verbose":
+            display_books_verbose()
 
         case "members":
             library.display_members()
@@ -52,6 +57,20 @@ def prompt():
             util.clean("Error. '" + user_input + "' is not a known command. Press enter to continue...")
 
     return True
+
+def display_books_verbose():
+    print("Zealand Library - Book Index.")
+    for book in library.books:
+        book.display_info(library)
+        print("      | Borrowed by:")
+        if library.is_borrowed(book):
+            for member in library.members:
+                if member.is_borrowed(book):
+                    print(f"              [{member.member_id}] {member.name}")
+        else:
+            print("                    None\n")
+
+
 
 def return_books():
     user_input = util.user_input("Return a book\n\nSelect a member\n[ ID , Name ]\n\n")
@@ -93,7 +112,6 @@ def return_books():
         return
 
     print("Return a book\n\nSelect a book")
-
     for book in member.borrowed_books:
         print("  [" + str(book.book_id) + "] " + book.title + " by " + book.author)
 
@@ -497,6 +515,7 @@ def initialize_library():
     member_manager.new_member("Albert Camus")
 
 def main():
+    #todo:Updates prints
     initialize_library()
     util.title()
     while prompt():
