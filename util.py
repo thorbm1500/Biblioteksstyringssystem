@@ -22,7 +22,7 @@ class Util:
             case _:
                 return False
 
-    def is_cancelled(self, _input):
+    def is_cancelled(self, _input: str):
         """Checks if an action has been canceled."""
         _input = str(_input)
         match _input.lower():
@@ -31,15 +31,15 @@ class Util:
                 return True
         return False
 
-    def parse_integer(self, integer):
+    def parse_integer(self, number: str):
         """Parses integers from strings. Returns None if parsing fails"""
         try:
-            integer = int(integer)
+            number = int(number)
         except:
             return None
-        return integer
+        return number
 
-    def retry(self, string):
+    def retry(self, string: str):
         """Prompts the user with a retry"""
         match input(string).lower():
             case "y"|"yes": return True
@@ -62,12 +62,12 @@ class Util:
         self.clear()
         return ui
 
-    def clear_print(self, string):
+    def clear_print(self, string:str):
         """Clears the screen and prompts the user with an input after"""
         self.clear()
         print(string)
 
-    def user_input_get_integer(self, string):
+    def user_input_get_integer(self, string:str):
         """Prompts the user with an input and will continue to do so until the user inputs and integer or exits"""
         integer = self.parse_integer(self.user_input(string))
 

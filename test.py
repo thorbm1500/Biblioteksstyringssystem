@@ -28,7 +28,7 @@ class Test:
             # Tests removal of an existing member
             self.can_delete_member()
             # Tests removal of an existing book
-            #self.can_delete_book()
+            self.can_delete_book()
         except:
             print(exception())
             return False
@@ -54,7 +54,7 @@ class Test:
         new_copies = 50
         old_test_id = book.book_id
 
-        if self.book_manager.update_book(old_test_id,self.book_test_id,new_title,new_author,new_copies):
+        if not self.book_manager.update_book(old_test_id,self.book_test_id,new_title,new_author,new_copies):
             raise ValueError(f"Exception: Unsuccessful update. Book with ID: {old_test_id}, could not be located with the new ID.")
 
         new_book = self.library.get_book_from_id(self.book_test_id)
@@ -102,6 +102,13 @@ class Test:
             case None: raise ValueError(f"Exception: Failed to delete member. Member with ID: {self.member_test_id}, could not be found.")
             case True: return
             case False: raise AssertionError(f"Exception: Unsuccessful removal. Member with ID: {self.member_test_id}, found in member list after attempt of removal.")
+
+    def can_delete_book(self):
+        """Tests removal of members"""
+        match self.library.remove_book(self.book_test_id):
+            case None: raise ValueError(f"Exception: Failed to delete book. Book with ID: {self.book_test_id}, could not be found.")
+            case True: return
+            case False: raise ValueError(f"Exception: Failed to delete book. {self.book_test_id} is not a valid ID.")
 
     def generate_member_id(self):
         """Assigning test_id a random integer in the range of 1 to 1000, on every instance, ensuring an actual test will be carried out instead of running a test with fixed values."""
