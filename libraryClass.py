@@ -71,24 +71,19 @@ class Library:
 
     def remove_member(self, member_id):
         """Removes the member with the given ID from the list of members"""
+        # Gets the member with the given ID. member will be None if no member with the given ID could be found
         member = self.get_member_from_id(member_id)
 
         if member is None:
-            print("Error. No member found with ID: " + str(member_id))
-            return
+            print(f"Error. No member found with ID: {member_id}")
+            return None
 
+        # Removes the member from the list
         self.members.remove(member)
 
-    def update_member(self, member):
-        """Updates the given member with new details"""
-        member_id = member.member_id
-        old_entry = self.get_member_from_id(member_id)
-
-        if old_entry is None:
-            print("Error. The member you're trying to update doesn't exist.")
-        else:
-            self.members.append(member)
-            self.members.remove(old_entry)
+        # Returns True or False, depending on if the removal was successful
+        if self.get_member_from_id(member_id) is None: return True
+        else: return False
 
     def issue_book(self, book_id, member):
         """Lends a copy of the book with the given ID to the given member"""
@@ -187,8 +182,9 @@ class Library:
         except:
             return None
 
+        # Iterates through all members and compares IDs. Returns the member if they're found, otherwise returns None
         for member in self.members:
-            if member.member_id is member_id:
+            if member.member_id == member_id:
                 return member
 
         # Returns None if no member was found

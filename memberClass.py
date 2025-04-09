@@ -22,7 +22,7 @@ class Member:
             for book in self.borrowed_books:
                 book_list = book_list + "\n        [" + str(book.book_id) + "] " + book.title + " by " + book.author
 
-            print("ID: " + str(self.member_id) + " | Name: " + self.name + " | Borrowed Books:" + book_list)
+            print("ID: " + str(self.member_id) + " | Name: " + self.name + " | Borrowed Books:" + book_list + "\n")
 
     def borrow_book(self, book):
         """Adds the given book to a list of borrowed books by the member"""

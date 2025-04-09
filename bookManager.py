@@ -2,16 +2,20 @@ from bookClass import Book
 
 class BookManager:
 
-    book_id = 0
+    book_id = 1
 
     def __init__(self, library):
         """Manager class for the Book class"""
         self.library = library
 
-    def new_book(self, title, author, copies=0):
+    def new_book(self, title, author, copies=0, _id=None):
         """Creates a new book"""
-        self._generate_id()
-        return self.library.add_book(Book(self.book_id, title,author),copies)
+        if _id is None:
+            _id = self._generate_id()
+        else:
+            while not self.check_id_availability(_id):
+                _id += 1
+        return self.library.add_book(Book(_id, title,author),copies)
 
     def latest_book(self):
         """Returns the ID of the latest book"""
@@ -19,12 +23,9 @@ class BookManager:
 
     def _generate_id(self):
         """Generates a new ID, to ensure no IDs overlap"""
-        while True:
+        while not self.check_id_availability(self.book_id):
             self.book_id += 1
-            for book in self.library.books:
-                # Checks new ID number against all existing IDs
-                if book.book_id == self.book_id: break
-            return
+        return self.book_id
 
     def update_book_id(self, _id):
         """Updates the current book ID"""
@@ -33,7 +34,7 @@ class BookManager:
 
     def reset_book_id(self):
         """Resets the current book ID"""
-        self.book_id = 0
+        self.book_id = 1
 
     def delete_book(self, book_id):
         """Removes the book with the given ID from the library and updates the current book ID"""
@@ -52,3 +53,18 @@ class BookManager:
                     member.borrowed_books.remove(book)
                     break
             member.borrow_book(new_book)
+
+    def check_id_availability(self, book_id):
+        """Returns True or False, whether the given ID is available or not"""
+        try:
+            book_id = int(book_id)
+        except:
+            return False
+
+        if self.library.books is None or len(self.library.books) < 1:
+            return True
+
+        for book in self.library.books:
+            if book.book_id == book_id:
+                return False
+        return True

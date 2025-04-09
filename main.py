@@ -2,6 +2,7 @@ from libraryClass import Library
 from bookManager import BookManager
 from memberManager import MemberManager
 from util import Util
+from test import Test
 
 util = Util()
 
@@ -9,6 +10,8 @@ library = Library()
 
 book_manager = BookManager(library)
 member_manager = MemberManager(library)
+
+test = Test(library,book_manager,member_manager)
 
 def prompt():
     """Prompts the user with all available features. Returns True or False, whether the user should be prompted again"""
@@ -69,8 +72,6 @@ def display_books_verbose():
                     print(f"              [{member.member_id}] {member.name}")
         else:
             print("                    None\n")
-
-
 
 def return_books():
     user_input = util.user_input("Return a book\n\nSelect a member\n[ ID , Name ]\n\n")
@@ -165,7 +166,7 @@ def rent():
                 rent()
             return
 
-    util.clear_print("Rent a book\n\nMember selected: [" + str(member.member_id) + "] " + member.name + "\nPress enter to continue...")
+    util.user_input("Rent a book\n\nMember selected: [" + str(member.member_id) + "] " + member.name + "\nPress enter to continue...")
 
     user_input = util.user_input("Rent a book\n\nSelect a book\n[ ID , Name ]\n\n")
     if util.is_cancelled(user_input): return
@@ -499,6 +500,7 @@ def delete_member():
     util.clean("Member " + member.name + " with ID: " + str(member.member_id) + " has been deleted.")
 
 def initialize_library():
+    book_manager.reset_book_id()
     book_manager.new_book("Harry Potter","J.K. Rowling",32)
     book_manager.new_book("Game of Thrones","George R.R. Martin",512)
     book_manager.new_book("Twilight","Stephanie Mayers",363)
@@ -507,6 +509,7 @@ def initialize_library():
     book_manager.new_book("Don Quixote", "Miguel de Cervantes", 6023)
     book_manager.new_book("The Lord of the Rings", "J. R. R. Tolkien", 2345)
 
+    member_manager.reset_member_id()
     member_manager.new_member("Thor Møller")
     member_manager.new_member("Emily Brontë")
     member_manager.new_member("Leo Tolstoy")
@@ -514,9 +517,16 @@ def initialize_library():
     member_manager.new_member("William Faulkner")
     member_manager.new_member("Albert Camus")
 
+def pre_test():
+    return test.run()
+
 def main():
     #todo:Updates prints
+    #todo:Fix prints clearing screen not pausing code
     #todo:Fix copies with updates to books
+    if not pre_test():
+        input("\n\nPre-testing failed. Program stopped...")
+        return
     initialize_library()
     util.title()
     while prompt():
