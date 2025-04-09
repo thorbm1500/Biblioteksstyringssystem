@@ -516,6 +516,7 @@ def initialize_library():
 
 def main():
     #todo:Updates prints
+    #todo:Fix copies with updates to books
     initialize_library()
     util.title()
     while prompt():

@@ -1,11 +1,17 @@
+from util import Util
+
+util = Util()
+
 class Library:
     def __init__(self, books=None, members=None):
         """Library class"""
         # Dictionary storing all the library's books and how many copies are stored
+        # Creates a dictionary if one has not been provided
         if books is None: self.books = {}
         else: self.books = books
 
         # List containing all the library's members
+        # Creates a list if one has not been provided
         if members is None: self.members = []
         else: self.members = members
 
@@ -15,21 +21,23 @@ class Library:
             copies = int(copies)
         except:
             copies = 0
+            print(f"Error. Unable to parse integer. Copies has been set to 0.")
+        # Adds the given book with its copies to the dictionary of books
         self.books[book] = copies
+        # Returns the ID of the new book
         return book.book_id
 
     def remove_book(self, book_id):
         """Removes the book with the given ID from the library"""
-        try:
-            book_id = int(book_id)
-        except:
+        book_id = util.parse_integer(book_id)
+        if book_id is None:
             print(f"Error. {book_id} is not a valid book ID.")
             return False
 
         book = self.get_book_from_id(book_id)
 
         if book is None:
-            print("Error. No book exists with ID: " + str(book_id))
+            print(f"Error. No book exists with ID: {book_id}")
             return False
 
         # Removes the book from all members that currently has it borrowed
@@ -39,20 +47,22 @@ class Library:
                 if index.book_id == book.book_id:
                     member.borrowed_books.remove(book)
 
+        # Removes the book along with its value (copies) from the dictionary
         self.books.pop(book)
         return True
 
 
     def update_book(self, book):
         """Updates the given book in the library"""
-        book_id = book.book_id
-        old_book = self.get_book_from_id(book_id)
+        old_book = self.get_book_from_id(book.book_id)
 
         if old_book is None:
             print("Error. The book you're trying to update doesn't exist.")
             return
         else:
+            # Adds the new book to the dictionary of books with the copies from the old book
             self.books[book] = self.books.get(old_book)
+            # Removes the old book from the dictionary
             self.books.pop(old_book)
 
     def add_member(self, member):
