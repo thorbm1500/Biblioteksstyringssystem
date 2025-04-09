@@ -14,6 +14,7 @@ class Util:
 
     def legal_exec(self, _input):
         """Checks if the given input is legal"""
+        if _input is None: return False
         if self.is_cancelled(_input): return True
         match _input:
             case "y"|"yes"|"n"|"no":
@@ -71,7 +72,7 @@ class Util:
         integer = self.parse_integer(self.user_input(string))
 
         while integer is None:
-            if self.retry("Error. '" + str(integer) + "' is not an integer. Do you want to try again? [Y/N]\n\n"):
+            if self.retry(f"Error. '{integer}' is not an integer. Do you want to try again? [Y/N]\n\n"):
                 integer = self.parse_integer(self.user_input(string))
 
         if integer is None: self.clean()

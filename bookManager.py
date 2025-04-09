@@ -41,24 +41,28 @@ class BookManager:
         if self.library.remove_book(book_id):
             self.update_book_id(book_id)
 
-    def update_book(self, old_book_id, new_book_id, title, author, copies):
+    def update_book(self, old_book_id, new_book_id, title, author, copies=None):
         """Updates the book with the given ID with new details"""
         new_book = Book(new_book_id, title, author)
-        self.library.update_book(old_book_id, new_book, copies)
+        if copies is None:
+            copies = self.library.get_copies(old_book_id)
+        if self.library.update_book(old_book_id, new_book, copies) is None: return False
         for member in self.library.members:
             if member.borrowed_books is None:
                 continue
             for book in member.borrowed_books:
                 if book.book_id == old_book_id:
                     member.borrowed_books.remove(book)
-                    break
-            member.borrow_book(new_book)
+                    member.borrow_book(new_book)
+        return True
 
     def check_id_availability(self, book_id):
         """Returns True or False, whether the given ID is available or not"""
-        try:
-            book_id = int(book_id)
-        except:
+        # Attempts parsing input to an integer
+        book_id = book_id
+        # If the parsing fails, the user will be informed, and the method will return False to indicate failure to update the book.
+        if book_id is None:
+            print(f"Error. {book_id} is not a valid book ID.")
             return False
 
         if self.library.books is None or len(self.library.books) < 1:

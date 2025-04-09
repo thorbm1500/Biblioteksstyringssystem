@@ -27,6 +27,8 @@ class Test:
             #self.can_return_books()todo
             # Tests removal of an existing member
             self.can_delete_member()
+            # Tests removal of an existing book
+            #self.can_delete_book()
         except:
             print(exception())
             return False
@@ -43,17 +45,17 @@ class Test:
         """Tests updating books' details"""
         book = self.library.get_book_from_id(self.book_test_id)
 
+        if book is None:
+            raise ValueError(f"Exception: Unsuccessful update. Book with ID: {self.book_test_id}, could not be located with the new ID. Make sure a book exists before trying to update its details.")
+
         self.generate_book_id()
         new_title = "Updated Test Title"
         new_author = "Updated Author"
         new_copies = 50
-
         old_test_id = book.book_id
-        old_title = book.title
-        old_author = book.author
-        old_copies = self.library.get_copies(book.book_id)
 
-        self.book_manager.update_book(old_test_id,self.book_test_id,new_title,new_author,new_copies)
+        if self.book_manager.update_book(old_test_id,self.book_test_id,new_title,new_author,new_copies):
+            raise ValueError(f"Exception: Unsuccessful update. Book with ID: {old_test_id}, could not be located with the new ID.")
 
         new_book = self.library.get_book_from_id(self.book_test_id)
         book_copies = self.library.get_copies(new_book.book_id)
