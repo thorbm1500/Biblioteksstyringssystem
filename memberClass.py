@@ -13,8 +13,10 @@ class Member:
     def display_info(self):
         """Displays the member's details"""
         # Checks if the member is borrowing any books and prints 'None' if no books are currently being borrowed.
-        if self.borrowed_books is None or len(self.borrowed_books)==0:
-            print(f"ID: {self.member_id} | Name: {self.name} | Borrowed Books: None")
+        if self.borrowed_books is None:
+            print(f"[{self.member_id}] {self.name} | Borrowed Books: None")
+        elif len(self.borrowed_books)==0:
+            print(f"[{self.member_id}] {self.name} | Borrowed Books: None")
         else:
             # Collects information of all the books being borrowed, and prints it out all together after collecting.
             book_list = ""
@@ -22,7 +24,7 @@ class Member:
                 book_list = book_list + f"\n        [{book.book_id}] {book.title} by {book.author}"
 
             # Prints the info.
-            print(f"ID: {self.member_id} | Name: {self.name} | Borrowed Books:{book_list}\n")
+            print(f"[{self.member_id}] {self.name} | Borrowed Books:{book_list}")
 
     def borrow_book(self, book):
         """Adds the given book to a list of borrowed books by the member"""

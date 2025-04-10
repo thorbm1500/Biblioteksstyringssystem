@@ -42,13 +42,15 @@ class Util:
     def retry(self, string: str):
         """Prompts the user with a retry"""
         match input(string).lower():
-            case "y"|"yes": return True
+            case "y"|"yes":
+                self.clear()
+                return True
         self.clean()
         return False
 
-    def clean(self, string=""):
+    def clean(self, string=None):
         """Cleans the screen and prints the title. Can be used with a string to delay the clearing of the screen"""
-        if string == "":
+        if string is None:
             self.clear()
             self.title()
         else:
@@ -69,11 +71,13 @@ class Util:
 
     def user_input_get_integer(self, string:str):
         """Prompts the user with an input and will continue to do so until the user inputs and integer or exits"""
-        integer = self.parse_integer(self.user_input(string))
+        user_input = self.user_input(string)
+        integer = self.parse_integer(user_input)
 
         while integer is None:
-            if self.retry(f"Error. '{integer}' is not an integer. Do you want to try again? [Y/N]\n\n"):
-                integer = self.parse_integer(self.user_input(string))
+            if self.retry(f"[Error] '{user_input}' is not an integer. Do you want to try again? [Y/N]\n\n"):
+                user_input = self.user_input(string)
+                integer = self.parse_integer(user_input)
 
         if integer is None: self.clean()
 

@@ -39,6 +39,7 @@ def prompt():
             display_books_verbose()
 
         case "members":
+            print("Zealand Library - Member Index.")
             library.display_members()
 
         case "create":
@@ -56,8 +57,11 @@ def prompt():
         case "return"|"return book":
             return_books()
 
+        case "clear"|"cls"|"clean"|"":
+            util.clean()
+
         case _:
-            util.clean(f"Error. '{user_input}' is not a known command. Press enter to continue...")
+            util.clean(f"[Error] '{user_input}' is not a known command. Press enter to continue...")
 
     return True
 
@@ -170,18 +174,19 @@ def rent():
 
     user_input = util.user_input("Rent a book\n\nSelect a book\n[ ID , Name ]\n\n")
     if util.is_cancelled(user_input): return
-
+    
     match user_input.lower():
         case "id":
-            book_id = util.user_input_get_integer("Rent a book\n\nSelect a book\n\nID: ")
-            if book_id is None: return
+            book = None
 
-            book = library.get_book_from_id(book_id)
+            while book is None:
+                book_id = util.user_input_get_integer("Rent a book\n\nSelect a book\n\nID: ")
+                if book_id is None: return
 
-            if book is None:
-                if util.retry("Rent a book\n\nNo book found with that ID. Do you want to try again? [Y/N]\n\n"):
-                    rent()
-                return
+                book = library.get_book_from_id(book_id)
+
+                if book is None:
+                    if not util.retry("Rent a book\n\nNo book found with that ID. Do you want to try again? [Y/N]\n"): return
 
         case "name":
             title = util.user_input("Rent a book\n\nSelect a book\n\nName: ")
@@ -193,6 +198,11 @@ def rent():
                 if util.retry("Rent a book\n\nNo book found with that name. Do you want to try again? [Y/N]\n\n"):
                     rent()
                 return
+        
+        case _:
+            if util.retry("Rent a book\n\nUnknown selection. Do you want to try again? [Y/N]\n\n"):
+                rent()
+            return
 
     # Checks if any copies are available
     if library.get_copies(book.book_id) < 1:
@@ -221,6 +231,7 @@ def update():
         case _:
             if util.retry("Update Panel\n\nUnknown selection. Do you want to try again? [Y/N]\n\n"):
                 update()
+            return
 
 def update_member():
     user_input = util.user_input("Update Panel\n\nChoose an update method\n[ ID , Name ]\n\n")
@@ -249,6 +260,11 @@ def update_member():
                 if util.retry("Update Panel\n\nNo member found with that name. Do you want to try again? [Y/N]\n\n"):
                     update_member()
                 return
+        
+        case _:
+            if util.retry("Update Panel\n\nUnknown selection. Do you want to try again? [Y/N]\n\n"):
+                update_member()
+            return
 
     # Current and new member details
     old_member_id = new_member_id = member.member_id
@@ -277,6 +293,11 @@ def update_member():
 
             new_member_name = util.user_input(f"Update Panel\n\nOld name: {old_member_name}\nNew name: ")
             if util.is_cancelled(new_member_name): return
+        
+        case _:
+            if util.retry("Update Panel\n\nUnknown selection. Do you want to try again? [Y/N]\n\n"):
+                update_member()
+            return
 
     confirm_changes = None
 
@@ -324,6 +345,11 @@ def update_book():
                 if util.retry("Update Panel\n\nNo book found with that title. Do you want to try again? [Y/N]\n\n"):
                     update_book()
                 return
+        
+        case _:
+            if util.retry("Update Panel\n\nUnknown selection. Do you want to try again? [Y/N]\n\n"):
+                update_book()
+            return
 
     # Current and new book details
     old_book_id = new_book_id = book.book_id
@@ -353,6 +379,11 @@ def update_book():
         case "id":
             new_book_id = util.user_input_get_integer(f"Update Panel\n\nOld ID: {old_book_id}\nNew ID: ")
             if new_book_id is None: return
+        
+        case _:
+            if util.retry("Update Panel\n\nUnknown selection. Do you want to try again? [Y/N]\n\n"):
+                update_book()
+            return
 
     confirm_changes = None
 
@@ -370,6 +401,11 @@ def update_book():
 
         case "n"|"no":
             update()
+        
+        case _:
+            if util.retry("Update Panel\n\nUnknown selection. Do you want to try again? [Y/N]\n\n"):
+                update_book()
+            return
 
 def create():
     user_input = util.user_input("Creation Panel\n\nChoose an object\n[ Book , Member ]\n\n")
@@ -399,7 +435,7 @@ def create():
             return
 
 def delete():
-    user_input = input("Deletion Panel\n\nChoose an object\n[ Book , Member ]\n\n")
+    user_input = input("Removal Panel\n\nChoose an object\n[ Book , Member ]\n\n")
     if util.is_cancelled(user_input): return
 
     match user_input.lower():
@@ -410,70 +446,80 @@ def delete():
             delete_member()
 
         case _:
-            if util.retry("Deletion Panel\n\nUnknown selection. Do you want to try again? [Y/N]\n\n"):
+            if util.retry("Removal Panel\n\nUnknown selection. Do you want to try again? [Y/N]\n\n"):
                 delete()
             return
 
 def delete_book():
-    user_input = util.user_input("Deletion Panel\n\nChoose a deletion method\n[ ID , Name ]\n\n")
+    user_input = util.user_input("Removal Panel\n\nChoose a removal method\n[ ID , Name ]\n\n")
     if util.is_cancelled(user_input): return
 
     book = None
 
     match user_input.lower():
         case "id":
-            book_id = util.user_input_get_integer("Deletion Panel\n\nSelect a book\n\nID: ")
+            book_id = util.user_input_get_integer("Removal Panel\n\nSelect a book\n\nID: ")
             if book_id is None: return
 
             book = library.get_book_from_id(book_id)
 
             if book is None:
-                if util.retry("Deletion Panel\n\nNo book found with that ID. Do you want to try again? [Y/N]\n\n"):
+                if util.retry("Removal Panel\n\nNo book found with that ID. Do you want to try again? [Y/N]\n\n"):
                     delete_book()
                 return
 
         case "name":
-            name = util.user_input("Deletion Panel\n\nSelect a book\n\nName: ")
+            name = util.user_input("Removal Panel\n\nSelect a book\n\nName: ")
             if util.is_cancelled(name): return
 
             book = library.get_book_from_string(name)
 
             if book is None:
-                if util.retry("Deletion Panel\n\nNo book found with that name. Do you want to try again? [Y/N]\n\n"):
+                if util.retry("Removal Panel\n\nNo book found with that name. Do you want to try again? [Y/N]\n\n"):
                     delete_book()
                 return
+        
+        case _:
+            if util.retry("Removal Panel\n\nUnknown selection. Do you want to try again? [Y/N]\n\n"):
+                delete_book()
+            return
 
     book_manager.delete_book(book.book_id)
     util.clean(f"Book {book.title} with ID: {book.book_id} has been deleted.")
 
 def delete_member():
-    user_input = util.user_input("Deletion Panel\n\nChoose a deletion method\n[ ID , Name ]\n\n")
+    user_input = util.user_input("Removal Panel\n\nChoose a removal method\n[ ID , Name ]\n\n")
     if util.is_cancelled(user_input): return
 
     member = None
 
     match user_input.lower():
         case "id":
-            member_id = util.user_input_get_integer("Deletion Panel\n\nSelect a member\n\nID: ")
+            member_id = util.user_input_get_integer("Removal Panel\n\nSelect a member\n\nID: ")
             if member_id is None: return
 
             member = library.get_member_from_id(member_id)
 
             if member is None:
-                if util.retry("Deletion Panel\n\nNo member found with that ID. Do you want to try again? [Y/N]\n\n"):
+                if util.retry("Removal Panel\n\nNo member found with that ID. Do you want to try again? [Y/N]\n\n"):
                     delete_member()
                 return
 
         case "name":
-            name = util.user_input("Deletion Panel\n\nSelect a member\n\nName: ")
+            name = util.user_input("Removal Panel\n\nSelect a member\n\nName: ")
             if util.is_cancelled(user_input): return
 
             member = library.get_member_from_string(name)
 
             if member is None:
-                if util.retry("Deletion Panel\n\nNo member found with that name. Do you want to try again? [Y/N]\n\n"):
+                if util.retry("Removal Panel\n\nNo member found with that name. Do you want to try again? [Y/N]\n\n"):
                     delete_member()
                 return
+        
+        case _:
+            if util.retry("Removal Panel\n\nUnknown selection. Do you want to try again? [Y/N]\n\n"):
+                delete_member()
+            return
 
     member_manager.delete_member(member.member_id)
     util.clean(f"Member {member.name} with ID: {member.member_id} has been deleted.")
@@ -497,7 +543,6 @@ def initialize_library():
     member_manager.new_member("Albert Camus")
 
 def main():
-    #todo:Fix prints clearing screen not pausing code
     if not test.run():
         input("\n\nPre-testing failed. Program stopped...")
         return

@@ -19,7 +19,7 @@ class BookManager:
             book_id = self.util.parse_integer(book_id)
             # If the parsing fails, the user will be informed, and the method will return False to indicate failure to update the book.
             if book_id is None:
-                print(f"Error. {book_id} is not a valid book ID.")
+                print(f"[Error] {book_id} is not a valid book ID.")
                 return False
             # If an ID has been provided, availability will be checked, and ensured.
             while not self.check_id_availability(book_id):
@@ -47,7 +47,7 @@ class BookManager:
             book_id = self.util.parse_integer(book_id)
             # If the parsing fails, the user will be informed, and the method will return False to indicate failure to update the current ID.
             if book_id is None:
-                print(f"Error. {book_id} is not a valid book ID.")
+                print(f"[Error] {book_id} is not a valid book ID.")
                 return False
             self.current_id = book_id
 
@@ -57,7 +57,7 @@ class BookManager:
         book_id = self.util.parse_integer(book_id)
         # If the parsing fails, the user will be informed, and the method will return False to indicate failure to update the book.
         if book_id is None:
-            print(f"Error. {book_id} is not a valid book ID.")
+            print(f"[Error] {book_id} is not a valid book ID.")
             return False
         # Returns True or False depending on if the removal was successful.
         return self.library.remove_book(book_id)
@@ -68,7 +68,7 @@ class BookManager:
         new_book_id = self.util.parse_integer(new_book_id)
         # If the parsing fails, the user will be informed, and the method will return False to indicate failure to update the book.
         if new_book_id is None:
-            print(f"Error. {new_book_id} is not a valid book ID.")
+            print(f"[Error] {new_book_id} is not a valid book ID.")
             return False
         # Creates a new instance of a Book with the provided details
         new_book = Book(new_book_id, title, author)
@@ -77,7 +77,7 @@ class BookManager:
             copies = self.library.get_copies(old_book_id)
 
         if not self.library.update_book(old_book_id, new_book, copies):
-            print(f"Error. No book found with ID: {old_book_id}.")
+            print(f"[Error] No book found with ID: {old_book_id}.")
             return False
 
         for member in self.library.members:
@@ -95,7 +95,7 @@ class BookManager:
         book_id = self.util.parse_integer(book_id)
         # If the parsing fails, the user will be informed, and the method will return False to indicate failure to update the book.
         if book_id is None:
-            print(f"Error. {book_id} is not a valid book ID.")
+            print(f"[Error] {book_id} is not a valid book ID.")
             return False
 
         if self.library.books is None or len(self.library.books) < 1:

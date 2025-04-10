@@ -19,7 +19,7 @@ class Library:
         copies = self.util.parse_integer(copies)
         # If the parsing fails, the number of copies will be set to '0', and the user will be informed
         if copies is None:
-            print(f"Error. Unable to parse '{copies}' to an integer. Copies has been set to '0'.")
+            print(f"[Error] Unable to parse '{copies}' to an integer. Copies has been set to '0'.")
             copies = 0
         # Adds the given book with its copies to the dictionary of books
         self.books[book] = copies
@@ -32,7 +32,7 @@ class Library:
         book_id = self.util.parse_integer(book_id)
         # If the parsing fails, the user will be informed, and the method will return False to indicate failure to remove the book.
         if book_id is None:
-            print(f"Error. {book_id} is not a valid book ID.")
+            print(f"[Error] {book_id} is not a valid book ID.")
             return False
 
         # Gets the book with the given ID
@@ -40,7 +40,7 @@ class Library:
 
         # If no book exists with the given ID, the user will be informed and the method will return None to indicate failure to remove the book.
         if book is None:
-            print(f"Error. No book exists with ID: {book_id}")
+            print(f"[Error] No book exists with ID: {book_id}")
             return None
 
         # Iterates through all members and their borrowed books to see if there's a match for the book. If there is, the book will be removed from their borrowed books, to ensure the book is removed completely.
@@ -61,7 +61,7 @@ class Library:
         old_book_id = self.util.parse_integer(old_book_id)
         # If the parsing fails, the user will be informed, and the method will return False to indicate failure to update the book.
         if old_book_id is None:
-            print(f"Error. {old_book_id} is not a valid book ID.")
+            print(f"[Error] {old_book_id} is not a valid book ID.")
             return False
 
         # Gets the old book with the given ID.
@@ -69,7 +69,7 @@ class Library:
 
         # If no book exists with the given ID, the user will be informed and the method will return False to indicate failure to update the book.
         if old_book is None:
-            print("Error. The book you're trying to update doesn't exist.")
+            print("[Error] The book you're trying to update doesn't exist.")
             return False
         else:
             # Adds the new and updated version of the book to the dictionary of books with the copies from the old book.
@@ -89,7 +89,7 @@ class Library:
 
         # If no member exists with the given ID, the user will be informed and the method will return None to indicate failure to locate member with given ID.
         if member is None:
-            print(f"Error. No member found with ID: {member_id}")
+            print(f"[Error] No member found with ID: {member_id}")
             return None
 
         # Removes the member from the list
@@ -105,15 +105,15 @@ class Library:
         copies = self.books.get(book)
 
         if book is None:
-            print(f"Error. No book exists with ID: {book_id}")
+            print(f"[Error] No book exists with ID: {book_id}")
             return
 
         if copies == 0:
-            print("Error. The book is out of stock.")
+            print(f"[Error] Book with ID: {book_id}, is out of stock.")
             return
 
         member.borrow_book(book)
-        self.books.put(book,copies-1)
+        self.books[book] = copies-1
 
     def return_book(self, book_id, member):
         """Returns the book with the given ID from the given member"""
@@ -121,15 +121,15 @@ class Library:
         copies = self.books.get(book)
 
         if book is None:
-            print(f"Error. No book exists with ID: {book_id}")
+            print(f"[Error] No book exists with ID: {book_id}")
             return
 
-        if member.borrowed_books.contains(book) is not True:
-            print("Error. The member is not currently borrowing this book.")
+        if member.is_borrowed(book) is not True:
+            print("[Error] The member is not currently borrowing this book.")
             return
 
         member.return_book(book)
-        self.books.put(book, copies + 1)
+        self.books[book] = copies + 1
 
     def display_books(self):
         """Prints details on all books in the library"""
@@ -142,7 +142,7 @@ class Library:
             if book.book_id == book_id:
                 book.display_info(self)
                 return
-        print(f"Error. No book found with ID: {book_id}")
+        print(f"[Error] No book found with ID: {book_id}")
 
     def get_book_from_string(self, name):
         """Get the book with the given name"""
@@ -170,7 +170,7 @@ class Library:
         member = self.get_member_from_id(member_id)
 
         if member is None:
-            print(f"Error. No member found with ID: {member_id}")
+            print(f"[Error] No member found with ID: {member_id}")
             return
 
         member.display_info()
