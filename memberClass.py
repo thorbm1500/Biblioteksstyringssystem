@@ -13,9 +13,7 @@ class Member:
     def display_info(self):
         """Displays the member's details"""
         # Checks if the member is borrowing any books and prints 'None' if no books are currently being borrowed.
-        if self.borrowed_books is None:
-            print(f"[{self.member_id}] {self.name} | Borrowed Books: None")
-        elif len(self.borrowed_books)==0:
+        if not self.is_borrowing():
             print(f"[{self.member_id}] {self.name} | Borrowed Books: None")
         else:
             # Collects information of all the books being borrowed, and prints it out all together after collecting.
@@ -27,13 +25,13 @@ class Member:
             print(f"[{self.member_id}] {self.name} | Borrowed Books:{book_list}")
 
     def borrow_book(self, book):
-        """Adds the given book to a list of borrowed books by the member"""
-        # Checks if there's an instance of a list and if there is, the book is then appended to that list and otherwise a list is created with the book.
+        """Adds the provided book to a list of borrowed books by the member"""
+        # Checks if there's an instance of a list and if there is, the book is then appended to that list. If not, a list is created with the book.
         if self.borrowed_books is None: self.borrowed_books = [ book ]
         else: self.borrowed_books.append(book)
 
     def return_book(self, book):
-        """Removes the given book from the list of borrowed books by the member.
+        """Removes the provided book from the list of borrowed books by the member.
 
                 Returns True or False, depending on if the removal of the book was performed successfully."""
         self.borrowed_books.remove(book)
@@ -41,15 +39,21 @@ class Member:
         return self.is_borrowed(book)
 
     def is_borrowed(self, book):
-        """Returns True or False whether the given book is in the list of borrowed books by the member"""
+        """Returns True or False whether the provided book is in the list of borrowed books by the member"""
+        # Checks if the member is currently borrowing any books.
+        if not self.is_borrowing(): return False
+        # Iterates through all books in the list of borrowed books, and compares their IDs. Returns True if a match is found, as the checked book is then currently being borrowed by the member.
+        for index in self.borrowed_books:
+            if index.book_id == book.book_id:
+                return True
+        # Should no match be found, the return statement below will fire, and return False, as the book is then not currently being borrowed by the member.
+        return False
+
+    def is_borrowing(self):
+        """Checks if the member is currently borrowing any books"""
         # Returns False if the list is None, as no books will then currently be borrowed.
         if self.borrowed_books is None: return False
         # Returns False if the length of the list is less than 1, as no books will then currently be borrowed.
         elif len(self.borrowed_books) < 1: return False
-        else:
-            # Iterates through all books in the list of borrowed books, and compares their IDs. Returns True if a match is found, as the checked book is then currently being borrowed by the member.
-            for index in self.borrowed_books:
-                if index.book_id == book.book_id:
-                    return True
-        # Should no match be found, the return statement below will fire, and return False, as the book is then not currently being borrowed by the member.
-        return False
+        # Returns true as both previous statements were False, indicating borrowed books are present.
+        else: return True

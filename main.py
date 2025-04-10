@@ -5,21 +5,20 @@ from util import Util
 from test import Test
 
 util = Util()
-
 library = Library(util)
-
 book_manager = BookManager(library, util)
 member_manager = MemberManager(library, util)
 
 test = Test(library,book_manager,member_manager)
 
 def prompt():
-    """Prompts the user with all available features. Returns True or False, whether the user should be prompted again"""
+    """Prompts the user with all available features. Returns True or False, whether the user should be prompted again or not"""
     user_input = util.user_input().lower()
 
     match user_input:
         case "exit"|"stop"|"shutdown"|"end"|"close"|"quit":
             util.clear_print("Goodbye.")
+            # Returns False to indicate the end of execution.
             return False
 
         case "help"|"help 1":
@@ -62,7 +61,7 @@ def prompt():
 
         case _:
             util.clean(f"[Error] '{user_input}' is not a known command. Press enter to continue...")
-
+    # Returns True to indicate continued execution.
     return True
 
 def display_books_verbose():
@@ -112,6 +111,10 @@ def return_books():
     user_input = util.user_input(f"Return a book\n\nMember selected: [{member.member_id}] {member.name}\nPress enter to continue...")
     if util.is_cancelled(user_input): return
 
+    if member.borrowed_books is None:
+        util.clean("Return a book\n\nThis member has not borrowed any books. Press enter to continue...")
+        return
+
     if len(member.borrowed_books) < 1:
         util.clean("Return a book\n\nThis member has not borrowed any books. Press enter to continue...")
         return
@@ -121,7 +124,9 @@ def return_books():
         print(f"  [{book.book_id}] {book.title} by {book.author}")
 
     book_id = util.user_input_get_integer("\nID: ")
-    if book_id is None: return
+    if book_id is None:
+        util.clean()
+        return
 
     book = library.get_book_from_id(book_id)
 
@@ -133,15 +138,13 @@ def return_books():
     if not member.is_borrowed(book):
         util.clean(f"Return a book\n\n[{book.book_id}] by {book.author} is currently not being borrowed by {member.name}. Press enter to continue...")
     else:
-        member.return_book(book)
+        library.return_book(book.book_id, member)
         util.clean(f"Return a book\n\n[{book.book_id}] by {book.author} has been returned from {member.name}. Press enter to continue...")
     return
 
 def rent():
     user_input = util.user_input("Rent a book\n\nSelect a member\n[ ID , Name ]\n\n")
     if util.is_cancelled(user_input): return
-
-    book = None
 
     match user_input.lower():
         case "id":
@@ -214,7 +217,7 @@ def rent():
         util.clean("Rent a book\n\nThis book has already been borrowed by this member. Press enter to continue...")
         return
 
-    member.borrow_book(book)
+    library.issue_book(book.book_id, member)
     util.clean(f"Rent a book\n\n[{member.member_id}] {member.name} has borrowed [{book.book_id}] {book.title}\n\nPress enter to continue...")
 
 def update():
@@ -454,8 +457,6 @@ def delete_book():
     user_input = util.user_input("Removal Panel\n\nChoose a removal method\n[ ID , Name ]\n\n")
     if util.is_cancelled(user_input): return
 
-    book = None
-
     match user_input.lower():
         case "id":
             book_id = util.user_input_get_integer("Removal Panel\n\nSelect a book\n\nID: ")
@@ -490,8 +491,6 @@ def delete_book():
 def delete_member():
     user_input = util.user_input("Removal Panel\n\nChoose a removal method\n[ ID , Name ]\n\n")
     if util.is_cancelled(user_input): return
-
-    member = None
 
     match user_input.lower():
         case "id":

@@ -11,6 +11,7 @@ class MemberManager:
 
     def new_member(self, name: str, borrowed_books=None, member_id=None):
         """Creates a new member. Returns the new member's ID"""
+        # Checks if a list of borrowed books has been provided. If no list has been provided, a new one will be created.
         if borrowed_books is None:
             borrowed_books = []
 
@@ -18,18 +19,19 @@ class MemberManager:
         if member_id is None:
             member_id = self._generate_id()
         else:
-            # Attempts parsing input to an integer
-            member_id = self.util.parse_integer(member_id)
+            # Attempts parsing input to an integer.
             # If the parsing fails, the user will be informed, and the method will return False to indicate failure to update the book.
-            if member_id is None:
-                print(f"Error. {member_id} is not a valid member ID.")
+            if self.util.parse_integer(member_id) is None:
+                print(f"[Error] {member_id} is not a valid member ID.")
                 return False
+            # Parses the ID to an integer.
+            member_id = self.util.parse_integer(member_id)
             # If an ID has been provided, availability will be checked, and ensured.
             while not self.check_id_availability(member_id):
                 member_id += 1
-
-        member = Member(member_id, name, borrowed_books)
-        self.library.add_member(member)
+        # Creates a new member and adds the member to the library.
+        self.library.add_member(Member(member_id, name, borrowed_books))
+        # Returns the ID of the newly created member.
         return member_id
 
     def _generate_id(self):
@@ -44,59 +46,70 @@ class MemberManager:
         If no ID is provided, the current ID will be reset to 1"""
         if member_id is None: self.current_id = 1
         else:
-            # Attempts parsing input to an integer
-            member_id = self.util.parse_integer(member_id)
-            # If the parsing fails, the user will be informed, and the method will return False to indicate failure to update the book.
-            if member_id is None:
-                print(f"Error. {member_id} is not a valid member ID.")
+            # Attempts parsing input to an integer.
+            # If the parsing fails, the user will be informed, and the method will return False to indicate failure to update the member ID.
+            if self.util.parse_integer(member_id) is None:
+                print(f"[Error] {member_id} is not a valid member ID.")
                 return False
-            self.current_id = member_id
+            # Parses the ID to an integer and updates the current ID.
+            self.current_id = self.util.parse_integer(member_id)
 
     def delete_member(self, member_id: int):
-        """Deletes the member with the given ID"""
-        # Attempts parsing input to an integer
-        member_id = self.util.parse_integer(member_id)
-        # If the parsing fails, the user will be informed, and the method will return False to indicate failure to update the book.
-        if member_id is None:
-            print(f"Error. {member_id} is not a valid member ID.")
+        """Deletes the member with the provided ID"""
+        # Attempts parsing input to an integer.
+        # If the parsing fails, the user will be informed, and the method will return False to indicate failure to delete the member.
+        if self.util.parse_integer(member_id) is None:
+            print(f"[Error] {member_id} is not a valid member ID.")
             return False
         # Returns True or False depending on if the removal was successful.
-        return self.library.remove_member(member_id)
+        return self.library.remove_member(self.util.parse_integer(member_id))
 
 
     def update_member(self, old_member_id: int, new_member_id: int, new_member_name: str):
-        """Updates the member with the given ID with new details. Returns True or False depending on if the update was successful."""
-        # Iterates through all members and compares IDs
+        """Updates the member with the provided ID with new details. Returns True or False depending on if the update was successful."""
+        # Attempts parsing input to an integer.
+        # If the parsing fails, the user will be informed, and the method will return False to indicate failure to update the book.
+        if self.util.parse_integer(old_member_id) is None:
+            print(f"[Error] {old_member_id} is not a valid member ID.")
+            return False
+        if self.util.parse_integer(new_member_id) is None:
+            print(f"[Error] {new_member_id} is not a valid member ID.")
+            return False
+        # Parses IDs to integers.
+        old_member_id = self.util.parse_integer(old_member_id)
+        new_member_id = self.util.parse_integer(new_member_id)
+        # Iterates through all members and compares IDs.
         for member in self.library.members:
             # If a successful comparison has been made, the details of that member will be updated with the new details provided to the method.
             if member.member_id == old_member_id:
                 member.member_id = new_member_id
                 member.name = new_member_name
                 return True
-        print("Error. The member you're trying to update doesn't exist.")
+        # Informs the user of failure.
+        print("[Error] The member you're trying to update doesn't exist.")
+        # Returns False to indicate failure in updating the member.
         return False
 
 
     def check_id_availability(self, member_id: int):
-        """Returns True or False, whether the given ID is available or not"""
-        # Attempts parsing input to an integer
-        member_id = self.util.parse_integer(member_id)
+        """Returns True or False, whether the provided ID is available or not"""
+        # Attempts parsing input to an integer.
         # If the parsing fails, the user will be informed, and the method will return False to indicate that the ID isn't available.
-        if member_id is None:
-            print(f"Error. {member_id} is not a valid member ID.")
+        if self.util.parse_integer(member_id) is None:
+            print(f"[Error] {member_id} is not a valid member ID.")
             return False
-
-        # Returns True if an instance of a list isn't present, as the ID will then be available.
-        if self.library.members is None:
+        # Parses the ID to an integer.
+        member_id = self.util.parse_integer(member_id)
+        if member_id < 0:
+            print("[Error] Negative values are not allowed.")
+            return False
+        # Checks if the library contains any members.
+        if self.library.contain_members() is None:
             return True
 
-        # Returns True if the length of the list is less than 1, as the ID will then be available.
-        if len(self.library.members) < 1:
-            return True
-
-        # Iterates through all members and compares IDs. Returns False if a match is found.
+        # Iterates through all members and compares IDs. Returns False if a match is found, to indicate that the ID is already in use.
         for member in self.library.members:
             if member.member_id == member_id:
                 return False
-        # Returns True as no more members are left to check and no matches have been found.
+        # Returns True to indicate that the ID is available.
         return True

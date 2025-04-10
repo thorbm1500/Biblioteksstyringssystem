@@ -13,7 +13,7 @@ class Util:
         print("Zealand Library\nUse 'help' to get started.\n")
 
     def legal_exec(self, _input):
-        """Checks if the given input is legal"""
+        """Checks if the provided input is legal"""
         if _input is None: return False
         if self.is_cancelled(_input): return True
         match _input:
@@ -31,8 +31,9 @@ class Util:
                 return True
         return False
 
-    def parse_integer(self, number: str):
+    def parse_integer(self, number):
         """Parses integers from strings. Returns None if parsing fails"""
+        if isinstance(number, int): return number
         try:
             number = int(number)
         except:
@@ -60,9 +61,9 @@ class Util:
 
     def user_input(self, string=""):
         """Prompts the user with a string and clears the screen after. Returns the user's input"""
-        ui = input(string)
+        user_input = input(string)
         self.clear()
-        return ui
+        return user_input
 
     def clear_print(self, string:str):
         """Clears the screen and prompts the user with an input after"""
@@ -80,5 +81,4 @@ class Util:
                 integer = self.parse_integer(user_input)
 
         if integer is None: self.clean()
-
-        return integer
+        else: return integer
