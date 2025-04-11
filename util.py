@@ -73,6 +73,9 @@ class Util:
     def user_input_get_integer(self, string:str):
         """Prompts the user with an input and will continue to do so until the user inputs and integer or exits"""
         user_input = self.user_input(string)
+        if self.is_cancelled(user_input):
+            self.clean()
+            return None
         integer = self.parse_integer(user_input)
 
         while integer is None:
@@ -81,4 +84,4 @@ class Util:
                 integer = self.parse_integer(user_input)
 
         if integer is None: self.clean()
-        else: return integer
+        return integer

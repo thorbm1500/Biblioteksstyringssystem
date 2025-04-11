@@ -174,7 +174,7 @@ class Library:
         # Informs that no match was found.
         print(f"[Error] No book found with ID: {book_id}")
 
-    def get_book_from_string(self, name):
+    def get_book_from_string(self, name: str):
         """Get the book with the provided name"""
         # Checks if the library contains any books.
         if not self.contain_books(): return None
@@ -186,7 +186,7 @@ class Library:
         # Returns None to indicate that no book was found with the name provided.
         return None
 
-    def get_member_from_string(self, name):
+    def get_member_from_string(self, name: str):
         """Get the member with the provided name"""
         # Checks if the library contains any members.
         if not self.contain_members(): return
