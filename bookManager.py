@@ -105,6 +105,7 @@ class BookManager:
             return False
         # Parses the ID to an integer.
         book_id = self.util.parse_integer(book_id)
+        # Checks if the ID is negative and returns False if that's the case as IDs cant be negative.
         if book_id < 0:
             print("[Error] Negative values are not allowed.")
             return False

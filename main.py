@@ -73,6 +73,7 @@ def display_books_verbose():
             for member in library.members:
                 if member.is_borrowed(book):
                     print(f"              [{member.member_id}] {member.name}")
+            print("")
         else:
             print("                    None\n")
 
@@ -209,12 +210,12 @@ def rent():
 
     # Checks if any copies are available
     if library.get_copies(book.book_id) < 1:
-        util.clean(f"Rent a book\n\nThe chosen book '{book.title}' has no available copies. Press enter to continue...")
+        util.clean(f"Rent a book\n\n[{book.book_id}] {book.title} has no available copies. Press enter to continue...")
         return
 
     # Checks if the member already has the book borrowed
     if member.borrowed_books is not None and member.is_borrowed(book):
-        util.clean("Rent a book\n\nThis book has already been borrowed by this member. Press enter to continue...")
+        util.clean(f"Rent a book\n\n{member.name} is already borrowing {book.title}. Press enter to continue...")
         return
 
     library.issue_book(book.book_id, member)
