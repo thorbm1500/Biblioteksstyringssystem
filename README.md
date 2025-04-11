@@ -9,13 +9,23 @@ Basic functions include:
  - Renting and returning books
 <br/>
 
-#### Want to run the code on your system?
+### Want to run the code on your system?
 
+**Automatic**
+1. Open cmd.
+2. Change to the directory where you want it installed.
+3. Run the command ``git clone https://github.com/thorbm1500/Biblioteksstyringssystem``
+4. Run the command ``cd .\Biblioteksstyringssystem``
+5. Run the command ``Python main.py``
+6. Enjoy.
+
+**Manual**
 1. Download the project as a zip.
 2. Extract the folder in a place you see fit.
-3. Open your cmd and change to the directory the project is located in.
-4. Run the command ``Python main.py``
-5. Enjoy.
+3. Open your cmd.
+4. Change to the directory the project is located in.
+5. Run the command ``Python main.py``
+6. Enjoy.
 <br/>
 <br/>
 
