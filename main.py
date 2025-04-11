@@ -23,15 +23,15 @@ def prompt():
             return False
 
         case "help"|"help 1":
-            util.clear_print("Prompts - Page 1\n  > help - Shows this list.\n  > exit - Shuts down the program.\n  > books - Prints a list of all books.\n  > members - Prints a list of all members.\n\nUse 'help 2' to go to the next page...")
+            util.clear_print("Commands - Page 1\n  > help - Shows this list.\n  > exit - Use at any time to return to the main menu, or exit the program.\n  > books - Prints a list of all books.\n  > members - Prints a list of all members.\n\nUse 'help 2' to go to the next page...")
 
         case "help 2":
-            util.clear_print("Prompts - Page 2\n  > create - Create new books or members.\n  > delete - Delete books or members.\n  > update - Update books or members.\n\nUse 'help 3' to go to the next page...")
+            util.clear_print("Commands - Page 2\n  > create - Create new books or members.\n  > delete - Delete books or members.\n  > update - Update books or members.\n\nUse 'help 3' to go to the next page...")
 
         case "help 3":
-            util.clear_print("Prompts - Page 3\n  > rent - Rent a book.\n  > return - Return a book.")
+            util.clear_print("Commands - Page 3\n  > rent - Rent a book.\n  > return - Return a book.\n  > clear - Clears the screen.")
 
-        case "books":
+        case "books" | "books --list":
             # Prints title.
             print("Zealand Library - Book Index. 'books -v' to show all details.")
             # Displays details about all books in the library.
@@ -41,7 +41,7 @@ def prompt():
             # Displays a verbose list of all books in the library.
             display_books_verbose()
 
-        case "members":
+        case "members"|"member --list":
             # Prints title and all members and their details.
             print("Zealand Library - Member Index.")
             # Displays all members in the library.
@@ -56,7 +56,7 @@ def prompt():
         case "update":
             update()
 
-        case "rent"|"rent book"|"issue"|"issue book":
+        case "rent"|"rent book"|"issue"|"issue book"|"borrow"|"borrow book":
             rent()
 
         case "return"|"return book":
@@ -674,7 +674,7 @@ def initialize_library():
     # Resets the current ID in the Member Manager.
     member_manager.update_member_id()
     # Creates all the default members the library comes with.
-    member_manager.new_member("Thor Møller")
+    member_manager.new_member("Frank Herbert")
     member_manager.new_member("Emily Brontë")
     member_manager.new_member("Leo Tolstoy")
     member_manager.new_member("Fyodor Dostoevsky")
