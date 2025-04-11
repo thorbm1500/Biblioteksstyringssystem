@@ -8,7 +8,7 @@ Basic functions include:
  - Updating details on books and members
  - Renting and returning books
 <br/>
-<br/>
+
 #### Want to run the code on your system?
 
 1. Download the project as a zip.
