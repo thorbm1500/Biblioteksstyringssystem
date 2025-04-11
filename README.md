@@ -22,3 +22,5 @@ Basic functions include:
 > [!NOTE]
 > Requires Python to run.\
 > *Made with Python 3.13.1*
+
+<!-- This repo is located at https://github.com/thorbm1500/Biblioteksstyringssystem -->
